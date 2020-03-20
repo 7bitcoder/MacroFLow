@@ -1,6 +1,7 @@
 package Parser;
 
-import Keyboard.ExecutableInstructions;
+import ContrtolOutput.ExecutableInstructions;
+import ContrtolOutput.Validator;
 
 import java.awt.*;
 import java.io.BufferedReader;
@@ -15,7 +16,6 @@ public class ReadMacroFile {
         File file = new File("C:\\Users\\Sylwo\\Desktop\\test.txt");
 
         BufferedReader br = new BufferedReader(new FileReader(file));
-
         String st;
         var robot  = new Robot();
         ExecutableInstructions.robot = robot;
@@ -25,11 +25,6 @@ public class ReadMacroFile {
         while ((st = br.readLine()) != null) {
             execList.addInstruction(generator.makeInstruction(st.split(" ")));
         }
-        System.out.println("ready");
-        Thread.sleep(200);
-        execList.run();
-
-        Thread.sleep(200);
         execList.run();
     }
 }

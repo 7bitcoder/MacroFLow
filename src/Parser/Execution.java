@@ -1,7 +1,8 @@
 package Parser;
 
+import ContrtolOutput.Validator;
+
 import java.util.ArrayList;
-import java.util.Set;
 
 public interface Execution {
     public int instrCounter = 0;

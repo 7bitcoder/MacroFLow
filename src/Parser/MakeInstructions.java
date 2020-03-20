@@ -1,7 +1,7 @@
 package Parser;
 
-import Keyboard.ExecutableInstructions;
-import Parser.Validator.ParserExcetption;
+import ContrtolOutput.ExecutableInstructions;
+import ContrtolOutput.Validator.ParserExcetption;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 

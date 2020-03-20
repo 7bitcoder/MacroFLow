@@ -1,14 +1,11 @@
-package Parser;
+package ContrtolOutput;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 
 public class Validator {
     public static class ParserExcetption extends Exception {
-        ParserExcetption(String msg) {
+        public ParserExcetption(String msg) {
             super(msg);
         }
     }
@@ -53,4 +50,5 @@ public class Validator {
             throw new ParserExcetption(String.format("Could not parse string {}, argument does not match one of these: {} argument: {}", index, req.toString(), read));
         return read;
     }
+
 }
