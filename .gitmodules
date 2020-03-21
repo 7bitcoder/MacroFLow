@@ -1,3 +1,0 @@
-[submodule "listener"]
-	path = listener
-	url = https://github.com/kwhat/jnativehook.git

@@ -1,14 +1,17 @@
 package ContrtolOutput;
 
-import Parser.Execution;
+import Instructions.Execution;
 
-import java.awt.Robot;
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class ExecutableInstructions {
     static public Robot robot;
@@ -52,7 +55,7 @@ public class ExecutableInstructions {
     }
 
     public static class pressKey implements Execution.Instruction {
-        String arg0;
+        int arg0;
         static Map<String, Integer> set = new HashMap<String, Integer>();
 
         {
@@ -62,43 +65,121 @@ public class ExecutableInstructions {
                     if (Modifier.isStatic(f.getModifiers())) {
                         var name = f.getName();
                         var index = name.indexOf("VK_");
-                        if (index != -1)
-                            set.put(name.substring(index + 3).toLowerCase(), f.getInt(name));
+                        if (index != -1) {
+                            var keyCode = f.getInt(name.substring(index));
+                            set.put(KeyEvent.getKeyText(keyCode).toLowerCase(), keyCode);
+                        }
                     }
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e.getMessage());
             }
-            var gg = 1;
         }
 
         @Override
         public void init(String[] args) throws Validator.ParserExcetption {
             v.valSize(1, args);
-            arg0 = v.valStr(args, 1, set.keySet());
+            var str = args[1].toLowerCase();
+            if (str.length() == 1) {
+                arg0 = KeyEvent.getExtendedKeyCodeForChar(str.charAt(0));
+                if (KeyEvent.CHAR_UNDEFINED == arg0)
+                    Validator.error(1, Validator.kind.numeric, str, "Could not find character on keyboard");
+            } else {
+                v.valStr(args, 1, set.keySet());
+                arg0 = set.get(str);
+            }
         }
 
         @Override
         public void run() {
-            robot.keyPress(set.get(arg0));
+            robot.keyPress(arg0);
         }
     }
 
-    public static class writeWords implements Execution.Instruction {
-        String arg0;
+    public static class releaseKey implements Execution.Instruction {
+        int arg0;
+
+        @Override
+        public void init(String[] args) throws Validator.ParserExcetption {
+            v.valSize(1, args);
+            var str = args[1].toLowerCase();
+            if (str.length() == 1) {
+                arg0 = KeyEvent.getExtendedKeyCodeForChar(str.charAt(0));
+                if (KeyEvent.CHAR_UNDEFINED == arg0)
+                    Validator.error(1, Validator.kind.numeric, str, "Could not find character on keyboard");
+            } else {
+                v.valStr(args, 1, pressKey.set.keySet());
+                arg0 = pressKey.set.get(str);
+            }
+        }
+
+        @Override
+        public void run() {
+            robot.keyRelease(arg0);
+        }
+    }
+
+    public static class Write implements Execution.Instruction {
+        ArrayList<Integer> listOfKeys = new ArrayList<Integer>();
         static Map<String, Integer> set = new HashMap<String, Integer>();
 
         @Override
         public void init(String[] args) throws Validator.ParserExcetption {
-            // unlimited
-            // v.valSize(1, args);
-            arg0 = v.valStr(args, 1, set.keySet());
+            v.valSize(1, args);
+            var cnt = 0;
+            for (char c : args[1].toCharArray()) {
+                var code = KeyEvent.getExtendedKeyCodeForChar(c);
+                if (KeyEvent.CHAR_UNDEFINED == code) {
+                    Validator.error(1, Validator.kind.numeric, args[1], String.format("Could not find character {} on keyboard. Number of character in word: {}", c, cnt));
+                }
+                //todo check if  code is pressable
+                //robot.keyRelease(code);
+                listOfKeys.add(code);
+                cnt++;
+            }
         }
 
         @Override
         public void run() {
-            robot.keyPress(set.get(arg0));
+            for (var keyCode : listOfKeys) {
+                robot.keyPress(keyCode);
+                robot.delay(1);
+                robot.keyRelease(keyCode);
+            }
         }
     }
 
+    public static class clipBoard implements Execution.Instruction {
+        String toClipBoard;
+        @Override
+        public void init(String[] args) throws Validator.ParserExcetption {
+            v.valSize(1, args);
+            toClipBoard = args[1];
+
+        }
+
+        @Override
+        public void run() {
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            Transferable transferable = new StringSelection(toClipBoard);
+            clipboard.setContents(transferable, null);
+        }
+    }
+
+    public static class Paste implements Execution.Instruction {
+        @Override
+        public void init(String[] args) throws Validator.ParserExcetption {
+            v.valSize(0, args);
+        }
+
+        @Override
+        public void run() {
+            robot.keyPress(KeyEvent.VK_CONTROL);
+            robot.delay(100);
+            robot.keyPress(KeyEvent.VK_V);
+            robot.delay(100);
+            robot.keyRelease(KeyEvent.VK_CONTROL);
+            robot.keyRelease(KeyEvent.VK_V);
+        }
+    }
 }

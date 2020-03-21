@@ -19,6 +19,11 @@ public class Validator {
         return val;
     }
 
+    public static void valSize( String[] args, int min, int max) throws ParserExcetption {
+        if (args.length < min + 1 || args.length > max + 1)
+            throw new ParserExcetption(String.format("Wrong arguments number. Instruction {} should have {}-{} arguments", args[0], min, max));
+    }
+
     public static void valSize(int size, String[] args) throws ParserExcetption {
         if (args.length != size + 1)
             throw new ParserExcetption(String.format("Wrong arguments number. Instruction {} should have {} arguments", args[0], size));
@@ -34,21 +39,33 @@ public class Validator {
 
     public static int valNum(String[] args, int index) throws ParserExcetption {
         String read = args[index];
+        int res = 0;
         try {
-            var res = Integer.parseInt(read);
-            return res;
+            res = Integer.parseInt(read);
         } catch (NumberFormatException e) {
-            throw new ParserExcetption(String.format("Could not parse numeric {} argument: {}", index, read));
+            error(index, kind.numeric, read, e.getMessage());
         }
+        return res;
     }
 
     public static String valStr(String[] args, int index, Set<String> req) throws ParserExcetption {
         String read = args[index];
         if (req.isEmpty() || req == null) // only runtime checking
             return read;
-        if (!req.contains(read))
-            throw new ParserExcetption(String.format("Could not parse string {}, argument does not match one of these: {} argument: {}", index, req.toString(), read));
+        if (!req.contains(read)) {
+            if (req.size() > 10)
+                error(index, kind.string, read, "Argument value is not allowed. Too see allowed values see manual");
+            else
+                error(index, kind.string, read, String.format("Argument value is not allowed. Allowed values: {}", req));
+        }
         return read;
     }
 
+    public static enum kind {
+        bool, string, numeric;
+    }
+
+    public static void error(int index, kind kin, String value, String msg) throws ParserExcetption {
+        throw new ParserExcetption(String.format("Index: {}. Could not parse {} argument '{}'. Error: {}", index, kin.name(), value, msg));
+    }
 }
