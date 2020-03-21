@@ -19,7 +19,7 @@ public class MacroImpl implements Macro {
     volatile boolean running = false;
     MacroExecution execList = new MacroExecution();
 
-    public String readMacroFile(String path) {
+    public String readMacro(String path) {
         File file;
         BufferedReader br;
         try {

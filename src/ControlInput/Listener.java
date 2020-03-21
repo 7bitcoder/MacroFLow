@@ -12,26 +12,9 @@ import java.util.HashMap;
 
 public class Listener implements NativeKeyListener {
     public static class MacroListener {
-        static enum State {
-            pressed, released;
-        }
 
-        class Key {
-            int code;
-            State state = State.released;
-
-            Key(int c) {
-                code = c;
-            }
-        }
 
         private Macro macro_;
-
-        static class Keys {
-            Key first;
-            Key second;
-        }
-
         Keys keys;
 
         public MacroListener(Macro macro) {
@@ -39,30 +22,27 @@ public class Listener implements NativeKeyListener {
         }
 
         public void setKeys(int first, int second) {
-            keys = new Keys();
-            keys.first = new Key(first);
-            keys.second = new Key(second);
+            keys = new Keys(first, second);
         }
 
         public void setKeys(int first) {
-            keys = new Keys();
-            keys.first = new Key(first);
+            keys = new Keys(first);
         }
 
         boolean KeyCheckPressed(int code) {
             if (keys.second == null) {
                 if (keys.first.code == code) {
-                    keys.first.state = State.pressed;
+                    keys.first.state = Keys.State.pressed;
                     return true;
                 }
             } else {
                 if (keys.second.code == code) {
-                    keys.second.state = State.pressed;
-                    if (keys.first.state == State.pressed)
+                    keys.second.state = Keys.State.pressed;
+                    if (keys.first.state == Keys.State.pressed)
                         return true;
                 }
                 if (keys.first.code == code) {
-                    keys.first.state = State.pressed;
+                    keys.first.state = Keys.State.pressed;
                 }
             }
             return false;
@@ -71,15 +51,15 @@ public class Listener implements NativeKeyListener {
         boolean KeyCheckReleased(int code) {
             if (keys.second == null) {
                 if (keys.first.code == code) {
-                    keys.first.state = State.released;
+                    keys.first.state = Keys.State.released;
                     return true;
                 }
             } else {
                 if (keys.second.code == code) {
-                    keys.second.state = State.released;
+                    keys.second.state = Keys.State.released;
                 }
                 if (keys.first.code == code) {
-                    keys.first.state = State.released;
+                    keys.first.state = Keys.State.released;
                 }
             }
             return false;
@@ -93,6 +73,7 @@ public class Listener implements NativeKeyListener {
 
     //todo macros hashmap
     public static MacroListener list;
+    volatile boolean macroRunning = false;
 
     @Override
     public void nativeKeyReleased(NativeKeyEvent e) {
@@ -105,8 +86,11 @@ public class Listener implements NativeKeyListener {
     @Override
     public void nativeKeyPressed(NativeKeyEvent e) {
         System.out.println("Key Pressed: " + NativeKeyEvent.getKeyText(e.getKeyCode()));
-        if (list.KeyCheckPressed(e.getKeyCode()))
+        if (!macroRunning && list.KeyCheckPressed(e.getKeyCode())) {
+            macroRunning = true;
             list.runMacro();
+            macroRunning = false;
+        }
     }
 
     @Override

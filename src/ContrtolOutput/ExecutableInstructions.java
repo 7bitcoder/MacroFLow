@@ -151,6 +151,7 @@ public class ExecutableInstructions {
 
     public static class clipBoard implements Execution.Instruction {
         String toClipBoard;
+
         @Override
         public void init(String[] args) throws Validator.ParserExcetption {
             v.valSize(1, args);

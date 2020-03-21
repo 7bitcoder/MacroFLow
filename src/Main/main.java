@@ -11,10 +11,10 @@ public class main {
         MacroImpl macro = new MacroImpl();
         macro.loadInstructions();
         macro.robot = new Robot();
-        macro.readMacroFile(path);
+        macro.readMacro(path);
         var listener = new Listener();
         listener.list = new Listener.MacroListener(macro);
-        listener.list.setKeys(NativeKeyEvent.VC_1);
+        listener.list.setKeys(NativeKeyEvent.VC_CONTROL, NativeKeyEvent.VC_D);
         listener.main();
     }
 }

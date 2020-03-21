@@ -13,7 +13,7 @@ public interface Macro {
 
     public void runMacro();
     public boolean isRunning();
-    public String readMacroFile(String path);
+    public String readMacro(String path);
 
 }
 
