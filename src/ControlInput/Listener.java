@@ -77,7 +77,6 @@ public class Listener implements NativeKeyListener {
 
     @Override
     public void nativeKeyReleased(NativeKeyEvent e) {
-        System.out.println("Key Released: " + NativeKeyEvent.getKeyText(e.getKeyCode()));
         if (list.KeyCheckReleased(e.getKeyCode()))
             ;
     }
@@ -85,7 +84,6 @@ public class Listener implements NativeKeyListener {
 
     @Override
     public void nativeKeyPressed(NativeKeyEvent e) {
-        System.out.println("Key Pressed: " + NativeKeyEvent.getKeyText(e.getKeyCode()));
         if (!macroRunning && list.KeyCheckPressed(e.getKeyCode())) {
             macroRunning = true;
             list.runMacro();
@@ -95,7 +93,7 @@ public class Listener implements NativeKeyListener {
 
     @Override
     public void nativeKeyTyped(NativeKeyEvent e) {
-        System.out.println("Key Typed: " + e.getKeyText(e.getKeyCode()));
+
     }
 
     public static void main() {

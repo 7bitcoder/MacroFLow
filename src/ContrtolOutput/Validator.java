@@ -21,12 +21,12 @@ public class Validator {
 
     public static void valSize( String[] args, int min, int max) throws ParserExcetption {
         if (args.length < min + 1 || args.length > max + 1)
-            throw new ParserExcetption(String.format("Wrong arguments number. Instruction {} should have {}-{} arguments", args[0], min, max));
+            throw new ParserExcetption(String.format("Wrong arguments number. Instruction %s should have %d-%d arguments", args[0], min, max));
     }
 
     public static void valSize(int size, String[] args) throws ParserExcetption {
         if (args.length != size + 1)
-            throw new ParserExcetption(String.format("Wrong arguments number. Instruction {} should have {} arguments", args[0], size));
+            throw new ParserExcetption(String.format("Wrong arguments number. Instruction %s should have %d arguments", args[0], size));
     }
 
     public static boolean valBool(String[] args, int index) throws ParserExcetption {
@@ -56,7 +56,7 @@ public class Validator {
             if (req.size() > 10)
                 error(index, kind.string, read, "Argument value is not allowed. Too see allowed values see manual");
             else
-                error(index, kind.string, read, String.format("Argument value is not allowed. Allowed values: {}", req));
+                error(index, kind.string, read, String.format("Argument value is not allowed. Allowed values: %s", req.toString()));
         }
         return read;
     }
@@ -66,6 +66,6 @@ public class Validator {
     }
 
     public static void error(int index, kind kin, String value, String msg) throws ParserExcetption {
-        throw new ParserExcetption(String.format("Index: {}. Could not parse {} argument '{}'. Error: {}", index, kin.name(), value, msg));
+        throw new ParserExcetption(String.format("Index: %d. Could not parse %s argument '%s'. Error: %s", index, kin.name(), value, msg));
     }
 }

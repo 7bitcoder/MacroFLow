@@ -10,7 +10,7 @@ import java.util.*;
 public class MakeInstructions {
     public Execution.Instruction makeInstruction(String[] args) throws ParserExcetption, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         if (args.length == 0)
-            throw new ParserExcetption(String.format("Line is empty: {}", args[0]));
+            throw new ParserExcetption(String.format("Line is empty: %s", args[0]));
         var instruction = getInstruction(args[0]); //name
         Execution.Instruction instance = instruction.getDeclaredConstructor().newInstance();
         instance.init(args);
@@ -20,7 +20,7 @@ public class MakeInstructions {
     private Class<? extends Execution.Instruction> getInstruction(String name) throws ParserExcetption {
         var instr = availableInstructions.get(name.toLowerCase());
         if (instr == null)
-            throw new ParserExcetption(String.format("Wrong macro instruction name {}", name));
+            throw new ParserExcetption(String.format("Wrong macro instruction name %s", name));
         return instr;
     }
 

@@ -130,7 +130,7 @@ public class ExecutableInstructions {
             for (char c : args[1].toCharArray()) {
                 var code = KeyEvent.getExtendedKeyCodeForChar(c);
                 if (KeyEvent.CHAR_UNDEFINED == code) {
-                    Validator.error(1, Validator.kind.numeric, args[1], String.format("Could not find character {} on keyboard. Number of character in word: {}", c, cnt));
+                    Validator.error(1, Validator.kind.numeric, args[1], String.format("Could not find character %c on keyboard. Number of character in word: %s", c, cnt));
                 }
                 //todo check if  code is pressable
                 //robot.keyRelease(code);
