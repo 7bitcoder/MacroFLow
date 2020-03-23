@@ -6,33 +6,31 @@ public class Keys {
     }
 
     public class Key {
-        int code;
+        Integer code;
         State state = State.released;
 
-        Key(int c) {
+        Key(Integer c) {
             code = c;
         }
 
+        void release() {
+            state = State.released;
+        }
+
+        void press() {
+            state = State.released;
+        }
+        boolean pressed() {
+            return state == State.pressed;
+        }
     }
 
     Key first;
     Key second;
 
-    public Keys(int fi, int sec) {
+    public Keys(Integer fi, Integer sec) {
         first = new Key(fi);
-        second = new Key(sec);
-    }
-
-    public Keys(int fi) {
-        first = new Key(fi);
-    }
-
-    public boolean equals(Object o) {
-        // no need for (o instanceof Point) by design
-        return first.code == ((Keys) o).first.code && second.code == ((Keys) o).second.code;
-    }
-
-    public int hashCode() {
-        return first.code * 31 + second.code;
+        if (sec != null)
+            second = new Key(sec);
     }
 }

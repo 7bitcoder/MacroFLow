@@ -15,38 +15,31 @@ public class Controller {
 
     Scenes active = Scenes.editor;
     static Stage primaryStage;
-    static Controller map;
-    HashMap<Scenes, Couple> screenMap = new HashMap<Scenes, Couple>();
+    static Controller map = new Controller();
+    HashMap<Scenes, Parent> screenMap = new HashMap<Scenes, Parent>();
     public Scene main;
 
-    static class Couple {
-        Parent parent;
-        Object controller;
-
-        Couple(Parent par, Object cotr) {
-            parent = par;
-            controller = cotr;
-        }
+    private Controller() {
     }
 
+
     public void init(Scenes main) {
-        this.main = new Scene(screenMap.get(main).parent);
+        this.main = new Scene(screenMap.get(main));
     }
 
     protected void addScreen(Scenes name, String path) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
-        Object controller = addController(name);
-        loader.setController(controller);
+        loader.setController(getController(name));
         Parent root = loader.load();
-        screenMap.put(name, new Couple(root, controller));
+        screenMap.put(name, root);
     }
 
-    Object addController(Scenes scene) {
+    Object getController(Scenes scene) {
         switch (scene) {
             case editor:
-                return new Editor();
+                return Editor.editor;
             case main:
-                return new Main();
+                return Main.main;
         }
         return null;
     }
@@ -56,7 +49,7 @@ public class Controller {
     }
 
     protected void activate(Scenes name) {
-        main.setRoot(screenMap.get(name).parent);
+        main.setRoot(screenMap.get(name));
         active = name;
     }
 

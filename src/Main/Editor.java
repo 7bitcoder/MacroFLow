@@ -1,7 +1,8 @@
 package Main;
 
-import ControlInput.Listener;
-import Instructions.MacroImpl;
+import ControlInput.MacroListener;
+import ControlInput.MacrosListener;
+import Instructions.Macro;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
@@ -10,12 +11,20 @@ import org.jnativehook.keyboard.NativeKeyEvent;
 
 import java.awt.*;
 import java.io.*;
-import java.nio.file.Files;
 
 public class Editor {
+    static Editor editor = new Editor();
     String actualFile = null;
+    @FXML
+    TextArea messages;
+    @FXML
+    TextArea editArea;
+    @FXML
+    Button saver;
+    @FXML
+    Button loader;
 
-    public Editor() {
+    private Editor() {
         System.out.println("editor");
     }
 
@@ -25,7 +34,7 @@ public class Editor {
         if (actualFile != null) {
             saveActual();
         }
-        editor.setText("");
+        editArea.setText("");
         saveNewFile();
     }
 
@@ -63,7 +72,7 @@ public class Editor {
                     sb.append(line);
                     sb.append("\n");
                 }
-                editor.setText(sb.toString());
+                editArea.setText(sb.toString());
             } catch (IOException ex) {
                 messages.setText(String.format("Could Not Open File %s, Error: %s", file.getName(), ex.getMessage()));
             }
@@ -75,27 +84,11 @@ public class Editor {
         clearMsg();
         if (actualFile != null) {
             saveActual();
-            editor.setText("");
+            editArea.setText("");
             actualFile = null;
         }
     }
 
-    @FXML
-    TextArea messages;
-
-    @FXML
-    TextArea editor;
-
-    //end editor
-
-    @FXML
-    Button saver;
-
-    private void saveActual() {
-        clearMsg();
-        File file = new File(actualFile);
-        saveTextToFile(editor.getText(), file);
-    }
 
     private void saveNewFile() {
         clearMsg();
@@ -107,10 +100,33 @@ public class Editor {
         File file = fileChooser.showSaveDialog(Controller.primaryStage);
 
         if (file != null) {
-            saveTextToFile(editor.getText(), file);
+            saveTextToFile(editArea.getText(), file);
+           // Main.main.
         }
     }
 
+    private void clearMsg() {
+        messages.setText("");
+    }
+
+    //end menu
+    // load button
+
+    public void validate() {
+        clearMsg();
+        try {
+            Macro macro = new Macro(actualFile);
+            macro.loadInstructions();
+            macro.robot = new Robot();
+            String msg = macro.readMacro(editArea.getText());
+            if (msg != "")
+                messages.setText(msg);
+        } catch (Exception e) {
+            messages.setText(e.getMessage());
+        }
+    }
+
+    //end load button
     private void saveTextToFile(String content, File file) {
         clearMsg();
         try {
@@ -122,33 +138,10 @@ public class Editor {
             messages.setText(String.format("Could Not Save File: Error %s", ex.getMessage()));
         }
     }
-    //end saver
 
-    Button loader;
-
-    @FXML
-    void load() {
+    private void saveActual() {
         clearMsg();
-        try {
-            MacroImpl macro = new MacroImpl();
-            macro.loadInstructions();
-            macro.robot = new Robot();
-            String msg = macro.readMacro(editor.getText());
-            if (msg != "")
-                messages.setText(msg);
-            else {
-                var listener = new Listener();
-                listener.list = new Listener.MacroListener(macro);
-                listener.list.setKeys(NativeKeyEvent.VC_CONTROL, NativeKeyEvent.VC_D);
-                listener.main();
-            }
-        } catch (Exception e) {
-            messages.setText(e.getMessage());
-        }
-    }
-    //end loader
-
-    private void clearMsg() {
-        messages.setText("");
+        File file = new File(actualFile);
+        saveTextToFile(editArea.getText(), file);
     }
 }

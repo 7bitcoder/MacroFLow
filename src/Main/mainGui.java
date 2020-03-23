@@ -16,7 +16,7 @@ public class mainGui extends Application {
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("MacroFlow");
         //add scenes
-        var map = Controller.map = new Controller();
+        var map = Controller.map;
         map.addScreen(Controller.Scenes.editor, "../gui/macroEditor.fxml");
         map.addScreen(Controller.Scenes.main, "../gui/macroMain.fxml" );
         map.init(Controller.Scenes.main);
