@@ -13,14 +13,14 @@ import java.util.Map;
 public class Macro implements IMacro {
     public static Robot robot = null;
     static MakeInstructions generator = new MakeInstructions();
-    private String filePath;
+    public File filePath;
     private Executor execList = new Executor();
     volatile boolean running = false;
-
+    public boolean enable = false;
     public Integer firstKey;
     public Integer secondKey;
 
-    public Macro(String path) {
+    public Macro(File path) {
         filePath = path;
     }
 

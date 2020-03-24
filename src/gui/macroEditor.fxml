@@ -46,7 +46,7 @@
             </Label>
             <Button fx:id="saver" layoutX="356.0" layoutY="220.0" mnemonicParsing="false" onMousePressed="#saverSave" prefHeight="38.0" prefWidth="94.0" text="Save" />
             <Button layoutX="476.0" layoutY="220.0" mnemonicParsing="false" onMousePressed="#validate" prefHeight="38.0" prefWidth="119.0" text="Check your macro" />
-            <TextArea fx:id="editor" layoutX="20.0" layoutY="38.0" prefHeight="382.0" prefWidth="305.0" promptText="Macro editor, to find available instructions see help.">
+            <TextArea fx:id="editArea" layoutX="20.0" layoutY="38.0" prefHeight="382.0" prefWidth="305.0" promptText="Write macro, to find available instructions see help.">
                <font>
                   <Font size="15.0" />
                </font>

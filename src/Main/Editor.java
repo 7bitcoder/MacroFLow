@@ -14,7 +14,7 @@ import java.io.*;
 
 public class Editor {
     static Editor editor = new Editor();
-    String actualFile = null;
+    File actualFile = null;
     @FXML
     TextArea messages;
     @FXML
@@ -59,7 +59,7 @@ public class Editor {
     public void openMacro() {
         clearMsg();
         FileChooser chooser = new FileChooser();
-        chooser.setTitle("Open File");
+        chooser.setTitle("Open Macro File");
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("MCR files (*.mcr)", "*.mcr");
         chooser.getExtensionFilters().add(extFilter);
         File file = chooser.showOpenDialog(Controller.primaryStage);
@@ -73,10 +73,11 @@ public class Editor {
                     sb.append("\n");
                 }
                 editArea.setText(sb.toString());
+                Main.main.holder.addNewMacro(file);
             } catch (IOException ex) {
                 messages.setText(String.format("Could Not Open File %s, Error: %s", file.getName(), ex.getMessage()));
             }
-            actualFile = file.getAbsolutePath();
+            actualFile = file;
         }
     }
 
@@ -101,6 +102,7 @@ public class Editor {
 
         if (file != null) {
             saveTextToFile(editArea.getText(), file);
+            Main.main.holder.addNewMacro(file);
            // Main.main.
         }
     }
@@ -115,6 +117,8 @@ public class Editor {
     public void validate() {
         clearMsg();
         try {
+            if(!actualFile.exists())
+                throw  new Exception(String.format("Actual macro file '%s' does not exist", actualFile.getName()));
             Macro macro = new Macro(actualFile);
             macro.loadInstructions();
             macro.robot = new Robot();
@@ -141,7 +145,6 @@ public class Editor {
 
     private void saveActual() {
         clearMsg();
-        File file = new File(actualFile);
-        saveTextToFile(editArea.getText(), file);
+        saveTextToFile(editArea.getText(), actualFile);
     }
 }

@@ -46,7 +46,6 @@
                   <Font size="22.0" />
                </font>
             </Label>
-            <TextArea layoutX="411.0" layoutY="214.0" prefHeight="70.0" prefWidth="123.0" />
             <Button layoutX="492.0" layoutY="316.0" mnemonicParsing="false" prefHeight="54.0" prefWidth="123.0" text="Start Listening" />
             <TextArea fx:id="messages" editable="false" layoutX="353.0" layoutY="78.0" opacity="0.67" prefHeight="108.0" prefWidth="239.0" />
             <TableView fx:id="table" layoutX="32.0" layoutY="61.0" prefHeight="345.0" prefWidth="285.0">
@@ -59,7 +58,8 @@
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
             </TableView>
-            <Button layoutX="349.0" layoutY="316.0" mnemonicParsing="false" prefHeight="54.0" prefWidth="123.0" text="Enable/Disable &#10;Selected" textAlignment="CENTER" />
+            <Button layoutX="349.0" layoutY="316.0" mnemonicParsing="false" onMousePressed="#enableSelected" prefHeight="54.0" prefWidth="123.0" text="Enable/Disable &#10;Selected" textAlignment="CENTER" />
+            <Button fx:id="hotKeyArea" layoutX="414.0" layoutY="214.0" mnemonicParsing="false" onMousePressed="#setHotKey" prefHeight="70.0" prefWidth="116.0" text="set  selected &#10;macro HotKey" />
       </children>
     </AnchorPane>
   </children>

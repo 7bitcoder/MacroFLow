@@ -12,30 +12,29 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TableMacroRow {
-    public SimpleStringProperty macro = new SimpleStringProperty("");
+    public SimpleStringProperty macroName = new SimpleStringProperty("");
     public SimpleStringProperty hotkey = new SimpleStringProperty("");
     public SimpleBooleanProperty enabled = new SimpleBooleanProperty(false);
-    File path;
-    Integer firstKey;
-    Integer secondKey;
+    Macro macro;
 
-    public TableMacroRow(File mac, Integer first, Integer sec, Boolean en) {
+    public TableMacroRow(Macro mac, Integer first, Integer sec, Boolean en) {
+        macro = mac;
         setKeys(first, sec);
-        path = mac;
-        setMacro(mac.getName());
+        setMacroName( macro.filePath.getName());
         setEnable(en);
     }
 
-    public void setMacro(String mac) {
-        this.macro.set(mac);
+    public void setMacroName(String mac) {
+        this.macroName.set(mac);
     }
 
-    public String getMacro() {
-        return this.macro.get();
+    public String getMacroName() {
+        return this.macroName.get();
     }
 
     public void setEnable(Boolean en) {
-        this.enabled.set(en);
+        macro.enable = en;
+        enabled.set(en);
     }
 
     public Boolean getEnabled() {
@@ -51,15 +50,14 @@ public class TableMacroRow {
     }
 
     public void setKeys(Integer first, Integer sec) {
-        firstKey = first;
         String hotk = "Not Set";
-        if (firstKey != null) {
-            hotk = KeyEvent.getKeyText(firstKey);
+        if (first != null) {
+            hotk = KeyEvent.getKeyText(first);
             if (sec != null) {
-                secondKey = sec;
-                hotk += "+" + KeyEvent.getKeyText(secondKey);
+                hotk += "+" + KeyEvent.getKeyText(sec);
             }
         }
+        macro.setKeys(first, sec);
         this.hotkey.set(hotk);
     }
 
