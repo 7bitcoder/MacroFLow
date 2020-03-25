@@ -2,28 +2,20 @@ package Main;
 
 import ControlInput.HotkeyListener;
 import Instructions.Macro;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseButton;
-import org.jnativehook.mouse.NativeMouseEvent;
 
-import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 public class Main implements Initializable {
     static Main main = new Main();
@@ -32,6 +24,7 @@ public class Main implements Initializable {
     static final char separator = '\035';
     static File recentFile = new File("recent.rcnt");
     File recent = new File("recent.rcnt");
+    @FXML
     MacrosHolder holder = new MacrosHolder();
     @FXML
     TableView<TableMacroRow> table;
@@ -68,7 +61,7 @@ public class Main implements Initializable {
 
     public void setHotKey() {
         if (!isHotKey) {
-            if(table.getSelectionModel().getSelectedItems().size() > 1) {
+            if (table.getSelectionModel().getSelectedItems().size() > 1) {
                 messages.setText("Select one Macro");
                 return;
             }
@@ -160,11 +153,15 @@ public class Main implements Initializable {
 
 
     class MacrosHolder {
-        Map<String, TableMacroRow> recentSet = new HashMap<String, TableMacroRow>();
+        Map<String, Macro> recentSet = new HashMap<String, Macro>();
 
         public void tableUpdate() {
-            table.setItems(FXCollections.observableArrayList(recentSet.values()));
+            table.;
             table.refresh();
+        }
+
+        private TableMacroRow makeRow(Macro mc) {
+            return new TableMacroRow(mc.filePath, mc.firstKey, mc.secondKey, mc.enable);
         }
 
         boolean resetRecentFile() throws IOException {
@@ -189,7 +186,7 @@ public class Main implements Initializable {
             recentSet.entrySet().removeIf(entry -> !Files.exists(Paths.get(entry.getKey())));
         }
 
-        void saveToRecent() {
+        public void saveToRecent() {
             /*
             file format:
             path|enabled[|first|sec]

@@ -1,26 +1,21 @@
 package Main;
 
-import Instructions.Macro;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.awt.event.KeyEvent;
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.File;
 
 public class TableMacroRow {
     public SimpleStringProperty macroName = new SimpleStringProperty("");
     public SimpleStringProperty hotkey = new SimpleStringProperty("");
     public SimpleBooleanProperty enabled = new SimpleBooleanProperty(false);
-    Macro macro;
+    String path;
 
-    public TableMacroRow(Macro mac, Integer first, Integer sec, Boolean en) {
-        macro = mac;
+    public TableMacroRow(File mac, Integer first, Integer sec, Boolean en) {
+        path = mac.getAbsolutePath();
         setKeys(first, sec);
-        setMacroName( macro.filePath.getName());
+        setMacroName(mac.getName());
         setEnable(en);
     }
 
@@ -33,7 +28,6 @@ public class TableMacroRow {
     }
 
     public void setEnable(Boolean en) {
-        macro.enable = en;
         enabled.set(en);
     }
 
@@ -57,8 +51,15 @@ public class TableMacroRow {
                 hotk += "+" + KeyEvent.getKeyText(sec);
             }
         }
-        macro.setKeys(first, sec);
         this.hotkey.set(hotk);
+    }
+
+    void setPath(File f) {
+        path = f.getAbsolutePath();
+    }
+
+    String getPath() {
+        return path;
     }
 
 }
