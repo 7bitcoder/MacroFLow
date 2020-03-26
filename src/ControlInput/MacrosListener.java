@@ -50,7 +50,7 @@ public class MacrosListener implements NativeKeyListener {
 
     }
 
-    public static void startListening() {
+    public void startListening() {
         try {
             GlobalScreen.registerNativeHook();
         } catch (NativeHookException ex) {
@@ -62,15 +62,17 @@ public class MacrosListener implements NativeKeyListener {
         GlobalScreen.addNativeKeyListener(MacrosListener.macrosListener);
     }
 
-    public static void stopListening() {
+    public void stopListening() {
         GlobalScreen.removeNativeKeyListener(MacrosListener.macrosListener);
     }
 
     public void addMacro(Macro macro) {
-        Integer first = macro.firstKey;
-        Integer second = macro.secondKey;
+        Integer first = macro.getFirstKey();
+        Integer second = macro.getSecondtKey();
         var listener = new MacroListener(macro);
         register(listener, first);
+        if (second != null)
+            register(listener, second);
     }
 
     public void removeAllMacros() {

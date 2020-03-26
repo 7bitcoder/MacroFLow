@@ -1,4 +1,4 @@
-package ContrtolOutput;
+package ControlOutput;
 
 import Instructions.Executor;
 

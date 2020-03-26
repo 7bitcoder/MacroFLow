@@ -9,7 +9,7 @@ public class MacroListener {
 
     public MacroListener(Macro macro) {
         macro_ = macro;
-        keys = new Keys(macro.firstKey, macro.secondKey);
+        keys = new Keys(macro.getFirstKey(), macro.getSecondtKey());
     }
 
     @Override

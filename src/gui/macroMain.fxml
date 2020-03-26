@@ -14,53 +14,52 @@
 <?import javafx.scene.text.Font?>
 
 <VBox prefHeight="450.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
-  <children>
-    <MenuBar VBox.vgrow="NEVER">
-      <menus>
-        <Menu mnemonicParsing="false" text="Macro">
-          <items>
-            <MenuItem mnemonicParsing="false" onAction="#newMacro" text="New" />
-            <MenuItem mnemonicParsing="false" onAction="#openMacro" text="Open…" />
-            <Menu mnemonicParsing="false" text="Open Recent" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Close" />
-            <MenuItem mnemonicParsing="false" text="Save" />
-            <MenuItem mnemonicParsing="false" text="Save As…" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Quit" />
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Help">
-          <items>
-                  <MenuItem mnemonicParsing="false" text="Available macro instructions" />
-            <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
-          </items>
-        </Menu>
-      </menus>
-    </MenuBar>
-    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="407.0" prefWidth="648.0" style="-fx-background-color: #e6e6e6;" VBox.vgrow="ALWAYS">
-      <children>
-            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="172.0" layoutY="14.0" prefHeight="38.0" prefWidth="296.0" text="Macro Selector" textAlignment="CENTER">
-               <font>
-                  <Font size="22.0" />
-               </font>
-            </Label>
-            <Button layoutX="492.0" layoutY="316.0" mnemonicParsing="false" prefHeight="54.0" prefWidth="123.0" text="Start Listening" />
-            <TextArea fx:id="messages" editable="false" layoutX="353.0" layoutY="78.0" opacity="0.67" prefHeight="108.0" prefWidth="239.0" />
-            <TableView fx:id="table" layoutX="32.0" layoutY="61.0" prefHeight="345.0" prefWidth="285.0">
-              <columns>
-                  <TableColumn fx:id="macro" editable="false" prefWidth="109.0" text="Macro" />
-                <TableColumn fx:id="hotkey" editable="false" prefWidth="95.0" sortable="false" text="Hotkey" />
-                <TableColumn fx:id="enabled" editable="false" prefWidth="76.0" sortable="false" text="Enabled" />
-              </columns>
-               <columnResizePolicy>
-                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-               </columnResizePolicy>
-            </TableView>
-            <Button layoutX="349.0" layoutY="316.0" mnemonicParsing="false" onMousePressed="#enableSelected" prefHeight="54.0" prefWidth="123.0" text="Enable/Disable &#10;Selected" textAlignment="CENTER" />
-            <Button fx:id="hotKeyArea" layoutX="414.0" layoutY="214.0" mnemonicParsing="false" onMousePressed="#setHotKey" prefHeight="70.0" prefWidth="116.0" text="set  selected &#10;macro HotKey" />
-      </children>
-    </AnchorPane>
-  </children>
+    <children>
+        <MenuBar VBox.vgrow="NEVER">
+            <menus>
+                <Menu mnemonicParsing="false" text="Macro">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#newMacro" text="New" />
+                        <MenuItem mnemonicParsing="false" onAction="#openMacro" text="Open…" />
+                        <Menu mnemonicParsing="false" text="Open Recent" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" text="Close" />
+                        <MenuItem mnemonicParsing="false" text="Save" />
+                        <MenuItem mnemonicParsing="false" text="Save As…" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" text="Quit" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Available macro instructions" />
+                        <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+        <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="407.0" prefWidth="648.0" style="-fx-background-color: #e6e6e6;" VBox.vgrow="ALWAYS">
+            <children>
+                <Label alignment="CENTER" contentDisplay="CENTER" layoutX="172.0" layoutY="14.0" prefHeight="38.0" prefWidth="296.0" text="Macro Selector" textAlignment="CENTER">
+                    <font>
+                        <Font size="22.0" />
+                    </font>
+                </Label>
+                <Button layoutX="384.0" layoutY="274.0" mnemonicParsing="false" onMouseClicked="#startListening" prefHeight="93.0" prefWidth="168.0" text="Start Listening" />
+                <TextArea fx:id="messages" editable="false" layoutX="349.0" layoutY="106.0" opacity="0.67" prefHeight="108.0" prefWidth="239.0" />
+                <TableView fx:id="table" editable="true" layoutX="32.0" layoutY="61.0" prefHeight="345.0" prefWidth="285.0">
+                    <columns>
+                        <TableColumn fx:id="macro" editable="false" prefWidth="109.0" text="Macro" />
+                        <TableColumn fx:id="hotkey" prefWidth="95.0" sortable="false" text="Hotkey" />
+                        <TableColumn fx:id="enabled" prefWidth="76.0" sortable="false" text="Enabled" />
+                    </columns>
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                    </columnResizePolicy>
+                </TableView>
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="376.0" layoutY="61.0" prefHeight="38.0" prefWidth="184.0" text="Macro validation messages" textAlignment="CENTER" />
+            </children>
+        </AnchorPane>
+    </children>
 </VBox>

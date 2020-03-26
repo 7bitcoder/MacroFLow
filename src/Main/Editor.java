@@ -1,13 +1,10 @@
 package Main;
 
-import ControlInput.MacroListener;
-import ControlInput.MacrosListener;
 import Instructions.Macro;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.stage.FileChooser;
-import org.jnativehook.keyboard.NativeKeyEvent;
 
 import java.awt.*;
 import java.io.*;
@@ -73,7 +70,7 @@ public class Editor {
                     sb.append("\n");
                 }
                 editArea.setText(sb.toString());
-                Main.main.holder.addNewMacro(file);
+                Main.main.macrosManager.addNewMacro(file);
             } catch (IOException ex) {
                 messages.setText(String.format("Could Not Open File %s, Error: %s", file.getName(), ex.getMessage()));
             }
@@ -102,8 +99,8 @@ public class Editor {
 
         if (file != null) {
             saveTextToFile(editArea.getText(), file);
-            Main.main.holder.addNewMacro(file);
-           // Main.main.
+            Main.main.macrosManager.addNewMacro(file);
+            // Main.main.
         }
     }
 
@@ -117,11 +114,11 @@ public class Editor {
     public void validate() {
         clearMsg();
         try {
-            if(!actualFile.exists())
-                throw  new Exception(String.format("Actual macro file '%s' does not exist", actualFile.getName()));
-            Macro macro = new Macro(actualFile);
+            if (!actualFile.exists())
+                throw new Exception(String.format("Actual macro file '%s' does not exist", actualFile.getName()));
+            Macro macro = new Macro(actualFile, null, null, null);
             macro.loadInstructions();
-            macro.robot = new Robot();
+            macro.robot_ = new Robot();
             String msg = macro.readMacro(editArea.getText());
             if (msg != "")
                 messages.setText(msg);

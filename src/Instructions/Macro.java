@@ -1,52 +1,113 @@
 package Instructions;
 
-import ContrtolOutput.Keyboard;
-import ContrtolOutput.Mouse;
-import ContrtolOutput.Validator;
+import ControlOutput.Validator;
 
 import java.awt.*;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Macro implements IMacro {
-    public static Robot robot = null;
-    static MakeInstructions generator = new MakeInstructions();
-    public File filePath;
-    private Executor execList = new Executor();
-    volatile boolean running = false;
-    public boolean enable = false;
-    public Integer firstKey;
-    public Integer secondKey;
+    static MakeInstructions generator_ = new MakeInstructions();
+    private Executor execList_ = new Executor();
+    private volatile boolean running_ = false;
+    public static Robot robot_ = null;
+    private String name_;
+    private File file_;
+    private Path path_;
+    private Integer firstKey_;
+    private Integer secondKey_;
+    private boolean enable_ = false;
 
-    public Macro(File path) {
-        filePath = path;
+    static {
+        ControlOutput.Keyboard.robot =
+                ControlOutput.System.robot =
+                        ControlOutput.Mouse.robot = robot_;
+    }
+
+    public Macro(File file, Integer fir, Integer sec, Boolean en) {
+        file_ = file;
+        path_ = file.toPath();
+        name_ = file.getName();
+        setEnable(en);
+        setKeys(fir, sec);
     }
 
     public void setKeys(Integer f, Integer s) {
-        firstKey = f;
-        secondKey = s;
+        firstKey_ = f;
+        secondKey_ = s;
+    }
+
+    public void setEnable(Boolean en) {
+        if (en == null)
+            enable_ = false;
+        else
+            enable_ = en;
+    }
+
+    public Integer getFirstKey() {
+        return firstKey_;
+    }
+
+    public Integer getSecondtKey() {
+        return secondKey_;
+    }
+
+    public Boolean getEnable() {
+        return enable_;
+    }
+
+    public String getName() {
+        return name_;
+    }
+
+    public Path getPath() {
+        return path_;
+    }
+
+    public File getFile() {
+        return file_;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return path_.equals(obj);
     }
 
     public static void loadInstructions() throws Exception {
-        generator.loadInstructions();
+        generator_.loadInstructions();
+    }
+
+    public String readMacro() {
+        FileReader fileStream = null;
+        try {
+            fileStream = new FileReader(file_);
+        } catch (FileNotFoundException e) {
+            return e.getMessage();
+        }
+        BufferedReader bufferedReader = new BufferedReader(fileStream);
+        return read(bufferedReader);
     }
 
     public String readMacro(String instructions) {
         BufferedReader br;
         Reader inputString = new StringReader(instructions);
         br = new BufferedReader(inputString);
+        return read(br);
+    }
+
+    private String read(BufferedReader br) {
         String st;
-        Keyboard.robot = robot;
         int index = 0;
         try {
             while ((st = br.readLine()) != null) {
                 index++;
-                execList.addInstruction(generator.makeInstruction(st.split(" ")));
+                execList_.addInstruction(generator_.makeInstruction(st.split(" ")));
             }
         } catch (Validator.ParserExcetption e) {
-            return String.format("Line: %d. %s", index, e.getMessage());
+            return String.format("Macro: %s, line: %d. %s", name_, index, e.getMessage());
         } catch (Exception e) {
             return e.getMessage();
         } finally {
@@ -56,17 +117,17 @@ public class Macro implements IMacro {
                 return "Could not close properly macro file";
             }
         }
-        return "";
+        return null;
     }
 
     public boolean isRunning() {
-        return running;
+        return running_;
     }
 
     synchronized public void runMacro() {
-        running = true;
-        execList.run();
-        running = false;
+        running_ = true;
+        execList_.run();
+        running_ = false;
     }
 
 }
@@ -90,7 +151,7 @@ class MakeInstructions {
 
     public void loadInstructions() throws Exception {
         try {
-            Class[] classes = new Class[]{Keyboard.class, Mouse.class, System.class};
+            Class[] classes = new Class[]{ControlOutput.Keyboard.class, ControlOutput.Mouse.class, ControlOutput.System.class};
             for (var cl : classes) {
                 var innerClasses = cl.getClasses();
                 for (var iCl : innerClasses)

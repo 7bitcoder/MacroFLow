@@ -1,6 +1,6 @@
 package Instructions;
 
-import ContrtolOutput.Validator;
+import ControlOutput.Validator;
 
 import java.util.ArrayList;
 

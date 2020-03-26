@@ -1,4 +1,4 @@
-package ContrtolOutput;
+package ControlOutput;
 
 import java.util.Set;
 
@@ -19,7 +19,7 @@ public class Validator {
         return val;
     }
 
-    public static void valSize( String[] args, int min, int max) throws ParserExcetption {
+    public static void valSize(String[] args, int min, int max) throws ParserExcetption {
         if (args.length < min + 1 || args.length > max + 1)
             throw new ParserExcetption(String.format("Wrong arguments number. Instruction %s should have %d-%d arguments", args[0], min, max));
     }

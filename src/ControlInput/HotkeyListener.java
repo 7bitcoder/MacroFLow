@@ -1,6 +1,5 @@
 package ControlInput;
 
-import ContrtolOutput.Keyboard;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
@@ -10,6 +9,7 @@ import org.jnativehook.mouse.NativeMouseListener;
 
 public class HotkeyListener {
     public static HotkeyListener hotkeyListener = new HotkeyListener();
+
     public static class Key {
         public enum Type {keyboard, mouse}
 

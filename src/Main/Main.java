@@ -1,31 +1,27 @@
 package Main;
 
-import ControlInput.HotkeyListener;
+import ControlInput.MacrosListener;
 import Instructions.Macro;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-import java.awt.event.KeyEvent;
+import java.awt.*;
 import java.io.*;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 public class Main implements Initializable {
     static Main main = new Main();
     private String[] macroPaths;
-    private MacrosHolder macrosHolder = new MacrosHolder();
     static final char separator = '\035';
     static File recentFile = new File("recent.rcnt");
     File recent = new File("recent.rcnt");
     @FXML
-    MacrosHolder holder = new MacrosHolder();
+    MacrosManager macrosManager = new MacrosManager();
     @FXML
     TableView<TableMacroRow> table;
     @FXML
@@ -36,11 +32,9 @@ public class Main implements Initializable {
     TableColumn<TableMacroRow, Boolean> enabled;
     @FXML
     TextArea messages;
-    @FXML
-    Button hotKeyArea;
 
     public void close() {
-        holder.saveToRecent();
+        macrosManager.saveToRecent();
     }
 
     private Main() {
@@ -56,88 +50,55 @@ public class Main implements Initializable {
         Controller.map.activate(Controller.Scenes.editor);
     }
 
-    private HotkeyListener.Key first, second;
-    static boolean isHotKey = false;
+    Boolean isListening = false;
 
-    public void setHotKey() {
-        if (!isHotKey) {
-            if (table.getSelectionModel().getSelectedItems().size() > 1) {
-                messages.setText("Select one Macro");
-                return;
-            }
-            isHotKey = true;
-            table.setDisable(true);
-            hotKeyArea.setText("Press button\nto Stop");
-            HotkeyListener.hotkeyListener.startListening();
+    public void startListening() {
+        if (isListening) {
+            MacrosListener.macrosListener.stopListening();
+            isListening = false;
         } else {
-            hotKeyArea.setText("set  selected \nmacro HotKey");
-            isHotKey = false;
-            table.setDisable(false);
-            var p = table.getSelectionModel().getSelectedItems().get(0);
-            var value = holder.recentSet.get(p.macro.filePath.getAbsolutePath());
-            value.setKeys(first.code, second.code);
-            HotkeyListener.hotkeyListener.stopListening();
-            holder.tableUpdate();
-        }
-    }
-
-    public void setFirstHotKey(HotkeyListener.Key key) {
-        first = key;
-        //olny keyboard now
-        hotkey.setText(KeyEvent.getKeyText(key.code));
-    }
-
-    public void setSecondHotKey(HotkeyListener.Key key) {
-        second = key;
-        //olny keyboard now
-        hotkey.setText(KeyEvent.getKeyText(first.code) + "+" + KeyEvent.getKeyText(key.code));
-        isHotKey = false;
-        setHotKey();
-    }
-
-    private void setHotKeyImplementation() {
-
-    }
-
-    public void load() {
-       /* try {
-            Macro macro = new Macro("C:\\Users\\Sylwo\\Desktop\\macro2.mcr");
-            macro.setKeys(NativeKeyEvent.VC_CONTROL, NativeKeyEvent.VC_D);
-            macro.loadInstructions();
-            macro.robot = new Robot();
-            String msg = macro.readMacro(editArea.getText());
-            if (msg != "")
-                messages.setText(msg);
-            else {
-
-                MacrosListener.macrosListener.addMacro(macro);
-                listener.list = new MacroListener(macro);
-                listener.list.setKeys(NativeKeyEvent.VC_CONTROL, NativeKeyEvent.VC_D);
-                listener.main();
+            for (var row : table.getItems()) {
+                if (row.getEnabled()) {
+                    if (row.equalKeys(null, null)) {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Hot key not set");
+                        alert.setHeaderText(null);
+                        alert.setContentText(String.format("Hot key of macro '%s' is not set", row.getMacro().getName()));
+                        alert.showAndWait();
+                        return;
+                    } else {
+                        var macro = row.getMacro();
+                        var msg = macro.readMacro();
+                        if (msg != null) {
+                            messages.setText(msg);
+                            return;
+                        }
+                        MacrosListener.macrosListener.addMacro(macro);
+                    }
+                }
             }
-        } catch (Exception e) {
-            //messages.setText(e.getMessage());
-        }*/
-    }
-
-    public void enableSelected() {
-        ArrayList<TableMacroRow> p = new ArrayList<TableMacroRow>(table.getSelectionModel().getSelectedItems());
-        for (TableMacroRow res : p) {
-            var value = holder.recentSet.get(res.macro.filePath.getAbsolutePath());
-            value.setEnable(!value.getEnabled());
+            MacrosListener.macrosListener.startListening();
+            isListening = true;
         }
-        holder.tableUpdate();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         //table.setItems();
-        macro.setCellValueFactory(new PropertyValueFactory<>("macroName"));
-        hotkey.setCellValueFactory(new PropertyValueFactory<>("hotkey"));
-        enabled.setCellValueFactory(new PropertyValueFactory<>("enabled"));
+        try {
+            Macro.loadInstructions();
+            Macro.robot_ = new Robot();
+        } catch (Exception e) {
+            messages.setText(e.getMessage());
+        }
+        hotkey.setCellFactory(TableFactories.hotKeyFactory);
+        enabled.setCellFactory(TableFactories.EnableFactory);
+        macro.setCellValueFactory(new PropertyValueFactory<TableMacroRow, String>("macroName"));
+        hotkey.setCellValueFactory(new PropertyValueFactory<TableMacroRow, String>("hotkey"));
+        enabled.setCellValueFactory(new PropertyValueFactory<TableMacroRow, Boolean>("enabled"));
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        holder.load();
-        holder.tableUpdate();
+        macrosManager.load();
+        macrosManager.validateData();
     }
 
 
@@ -152,16 +113,10 @@ public class Main implements Initializable {
     }
 
 
-    class MacrosHolder {
-        Map<String, Macro> recentSet = new HashMap<String, Macro>();
-
-        public void tableUpdate() {
-            table.;
-            table.refresh();
-        }
+    class MacrosManager {
 
         private TableMacroRow makeRow(Macro mc) {
-            return new TableMacroRow(mc.filePath, mc.firstKey, mc.secondKey, mc.enable);
+            return new TableMacroRow(mc);
         }
 
         boolean resetRecentFile() throws IOException {
@@ -174,18 +129,6 @@ public class Main implements Initializable {
             return true;
         }
 
-        void addNewMacro(File file) {
-            var abs = file.getAbsolutePath();
-            if (recentSet.get(abs) == null)
-                recentSet.put(abs, new TableMacroRow(new Macro(file), null, null, false));
-            tableUpdate();
-        }
-
-        void validateData() {
-            //check if files still exists
-            recentSet.entrySet().removeIf(entry -> !Files.exists(Paths.get(entry.getKey())));
-        }
-
         public void saveToRecent() {
             /*
             file format:
@@ -196,21 +139,48 @@ public class Main implements Initializable {
                 if (!recentFile.exists())
                     recentFile.createNewFile();
                 var writer = new PrintWriter(recentFile);
-                for (var dat : recentSet.entrySet()) {
-                    var data = dat.getValue();
+                for (var row : table.getItems()) {
                     StringBuilder sb = new StringBuilder();
-                    sb.append(data.macro.filePath.toString() + separator);
-                    sb.append(data.macro.enable);
-                    if (data.macro.firstKey != null)
-                        sb.append(separator + data.macro.firstKey);
-                    if (data.macro.secondKey != null)
-                        sb.append(separator + data.macro.secondKey);
+                    sb.append(row.getMacro().getPath().toString() + separator);
+                    sb.append(row.getEnabled());
+                    if (row.getMacro().getFirstKey() != null)
+                        sb.append(separator + row.getMacro().getFirstKey().toString());
+                    if (row.getMacro().getSecondtKey() != null)
+                        sb.append(separator + row.getMacro().getSecondtKey().toString());
                     writer.println(sb.toString());
                 }
                 writer.close();
             } catch (Exception e) {
             }
         }
+
+        void addNewMacro(File file) {
+            addMacro(file, null, null, null);
+        }
+
+        void addMacro(File file, Integer first, Integer sec, Boolean en) {
+            var macro = new Macro(file, first, sec, en);
+            boolean found = false;
+            for (var row : table.getItems()) {
+                if (row.getMacro().equals(macro))
+                    found = true;
+            }
+            if (!found)
+                table.getItems().add(makeRow(macro));
+            table.refresh();
+        }
+
+        void validateData() {
+            //check if files still exists
+            ArrayList<TableMacroRow> toDelete = new ArrayList<TableMacroRow>();
+            for (var row : table.getItems()) {
+                if (!row.getMacro().getFile().exists())
+                    toDelete.add(row);
+            }
+            for (var del : toDelete)
+                table.getItems().remove(del);
+        }
+
 
         void load() {
             try {
@@ -227,14 +197,12 @@ public class Main implements Initializable {
                         Boolean en;
                         try {
                             en = Boolean.parseBoolean(values[1]);
-                            first = (len == 3 ? Integer.parseInt(values[2]) : null);
+                            first = (len >= 3 ? Integer.parseInt(values[2]) : null);
                             second = (len == 4 ? Integer.parseInt(values[3]) : null);
                         } catch (Exception e) {
                             continue;
                         }
-                        String abs = f.getAbsolutePath();
-                        if (recentSet.get(abs) == null)
-                            recentSet.put(abs, new TableMacroRow(new Macro(f), first, second, en));
+                        addMacro(f, first, second, en);
                     }
                 } else {
                     recentFile.createNewFile();
