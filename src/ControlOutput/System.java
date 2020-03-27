@@ -12,8 +12,8 @@ public class System {
     static public Robot robot;
     static Validator v = Validator.getVaidator();
 
-    public System(Robot r) {
-        robot = r;
+    public System() {
+
     }
 
     public static class Delay implements Executor.Instruction {

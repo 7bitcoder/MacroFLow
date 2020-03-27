@@ -14,7 +14,7 @@ public class Macro implements IMacro {
     static MakeInstructions generator_ = new MakeInstructions();
     private Executor execList_ = new Executor();
     private volatile boolean running_ = false;
-    public static Robot robot_ = null;
+    public static Robot robot_;
     private String name_;
     private File file_;
     private Path path_;
@@ -22,6 +22,11 @@ public class Macro implements IMacro {
     private boolean enable_ = false;
 
     static {
+        try {
+            robot_ = new Robot();
+        } catch (AWTException e) {
+            System.exit(1);
+        }
         ControlOutput.Keyboard.robot =
                 ControlOutput.System.robot =
                         ControlOutput.Mouse.robot = robot_;
@@ -35,8 +40,12 @@ public class Macro implements IMacro {
         setKeys(fir, sec);
     }
 
-    public void setKeys(Integer f, Integer s) {
-        hotKey.setKeys(f, s);
+    public void setKeys(Keys keys) {
+        setKeys(keys.getFirst().get(), keys.getSecond().get());
+    }
+
+    public void setKeys(Integer fir, Integer sec) {
+        hotKey.setKeys(fir, sec);
     }
 
     public void setEnable(Boolean en) {
@@ -76,7 +85,7 @@ public class Macro implements IMacro {
 
     @Override
     public boolean equals(Object obj) {
-        return path_.equals(obj);
+        return path_.equals(((Macro) obj).path_);
     }
 
     public boolean equalKeys(Macro mac) {

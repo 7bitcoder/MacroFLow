@@ -1,6 +1,6 @@
 package ControlInput;
 
-import java.awt.event.KeyEvent;
+import org.jnativehook.keyboard.NativeKeyEvent;
 
 public class Keys {
     public static class Key {
@@ -53,17 +53,31 @@ public class Keys {
 
         public void reset() {
             code = null;
+            type = Type.keyboard;
+            state = State.released;
         }
 
         @Override
         public boolean equals(Object o) {
-            return code.equals(o);
+            var key = ((Key) o);
+            if (isSet())
+                return code.equals(key.code);
+            else if (key.isSet())
+                return false;
+            else
+                return true;
+        }
+
+        public boolean equals(int co) {
+            if (isSet())
+                return code.equals(co);
+            return false;
         }
 
         @Override
         public String toString() {
             if (isSet())
-                return KeyEvent.getKeyText(code);
+                return NativeKeyEvent.getKeyText(code);
             else
                 return "NONE";
         }
@@ -84,6 +98,10 @@ public class Keys {
         second.set(sec);
     }
 
+    public boolean isEmpty() {
+        return !first.isSet() && !second.isSet();
+    }
+
     public Key getFirst() {
         return first;
     }
@@ -94,7 +112,10 @@ public class Keys {
 
     @Override
     public boolean equals(Object o) {
-        return first.equals(((Keys) o).first) && second.equals(((Keys) o).second);
+        var keys = (Keys) o;
+        if (isEmpty() && keys.isEmpty())
+            return false;
+        return first.equals(keys.first) && second.equals(keys.second);
     }
 
     @Override

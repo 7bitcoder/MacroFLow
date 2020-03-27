@@ -55,8 +55,13 @@ public class TableMacroRow {
         return macro_;
     }
 
-    public void setKeys(Integer fir, Integer sec) {
-        macro_.setKeys(fir, sec);
+    public void resetKeys() {
+        macro_.getHotKey().reset();
+        updateHotKey();
+    }
+
+    public void setKeys(Keys keys) {
+        macro_.setKeys(keys);
         updateHotKey();
     }
 

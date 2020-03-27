@@ -1,5 +1,6 @@
 package ControlInput;
 
+import javafx.application.Platform;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
@@ -7,23 +8,49 @@ import org.jnativehook.keyboard.NativeKeyListener;
 import org.jnativehook.mouse.NativeMouseEvent;
 import org.jnativehook.mouse.NativeMouseListener;
 
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+
 public class HotkeyListener {
-    public static HotkeyListener hotkeyListener = new HotkeyListener();
+    private volatile boolean isWorking = false;
 
-    public static class Key {
-        public enum Type {keyboard, mouse}
+    public interface Invoker {
 
-        public Type type = Type.mouse;
-        public Integer code;
+        void writeRes(Keys key);
+
+        void stop();
     }
 
-    Key first, second;
+    public HotkeyListener() {
+        LogManager.getLogManager().reset();
+        Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
+        logger.setLevel(Level.OFF);
+    }
+
+    Invoker invoker;
+
+    Keys keys = new Keys();
+    Keys.Key first = keys.getFirst();
+    Keys.Key second = keys.getSecond();
     Keyboard keyboard = new Keyboard();
     Mouse mouse = new Mouse();
 
+    public void lock() {
+        isWorking = true;
+    }
+
+    public boolean isLocked() {
+        return isWorking;
+    }
+
     public void reset() {
-        keyboard = null;
-        mouse = null;
+        keys.reset();
+        invoker = null;
+    }
+
+    public void setInvoker(Invoker invoker) {
+        this.invoker = invoker;
     }
 
     class Keyboard implements NativeKeyListener {
@@ -33,17 +60,18 @@ public class HotkeyListener {
 
         @Override
         public void nativeKeyPressed(NativeKeyEvent nativeKeyEvent) {
+            Platform.runLater(() -> {
+                int keyCode = nativeKeyEvent.getKeyCode();
+                if (!first.isSet()) {
+                    first.set(keyCode);
+                    invoker.writeRes(keys);
+                } else if (!second.isSet() && keyCode != first.get()) {
+                    second.set(keyCode);
+                    invoker.writeRes(keys);
+                    invoker.stop();
+                }
+            });
 
-            if (first == null) {
-                first = new Key();
-                first.code = nativeKeyEvent.getKeyCode();
-                first.type = Key.Type.keyboard;
-            } else if (second == null) {
-                second = new Key();
-                second.code = nativeKeyEvent.getKeyCode();
-                second.type = Key.Type.keyboard;
-                startListening();
-            }
         }
 
         @Override
@@ -60,16 +88,7 @@ public class HotkeyListener {
 
         @Override
         public void nativeMousePressed(NativeMouseEvent nativeMouseEvent) {
-            if (first == null) {
-                first = new Key();
-                first.code = nativeMouseEvent.getButton();
-                first.type = Key.Type.mouse;
-            } else if (second == null) {
-                second = new Key();
-                second.code = nativeMouseEvent.getButton();
-                second.type = Key.Type.mouse;
-                startListening();
-            }
+
         }
 
         @Override
@@ -84,8 +103,6 @@ public class HotkeyListener {
         } catch (NativeHookException ex) {
             System.err.println("There was a problem registering the native hook.");
             System.err.println(ex.getMessage());
-
-            System.exit(1);
         }
         GlobalScreen.addNativeKeyListener(keyboard);
         //GlobalScreen.addNativeMouseListener(mouse);
@@ -93,6 +110,13 @@ public class HotkeyListener {
 
     public void stopListening() {
         GlobalScreen.removeNativeKeyListener(keyboard);
+        try {
+            GlobalScreen.unregisterNativeHook();
+        } catch (NativeHookException e) {
+            e.printStackTrace();
+        }
+        reset();
+        isWorking = false;
         //GlobalScreen.removeNativeMouseListener(mouse);
     }
 }

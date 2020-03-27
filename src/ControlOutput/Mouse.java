@@ -8,8 +8,7 @@ public class Mouse {
     static public Robot robot;
     static Validator v = Validator.getVaidator();
 
-    public Mouse(Robot r) {
-        robot = r;
+    public Mouse() {
     }
 
     public static class MoveMouse implements Executor.Instruction {

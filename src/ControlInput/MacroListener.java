@@ -18,7 +18,6 @@ public class MacroListener {
 
     @Override
     public boolean equals(Object o) {
-        // no need for (o instanceof Point) by design
         return macro_.equalKeys(((MacroListener) o).macro_);
     }
 
@@ -28,7 +27,7 @@ public class MacroListener {
     }
 
     boolean KeyCheckPressed(int code) {
-        if (second.isSet()) {
+        if (!second.isSet()) {
             if (first.equals(code)) {
                 first.press();
                 return true;

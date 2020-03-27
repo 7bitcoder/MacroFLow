@@ -1,20 +1,21 @@
 package Main;
 
+import ControlInput.HotkeyListener;
+import ControlInput.Keys;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.util.Callback;
 
 public class TableCellFactories {
     static ToggleGroup tg = new ToggleGroup();
-
+    private static HotkeyListener hotkeyListener = new HotkeyListener();
     static Callback<TableColumn<TableMacroRow, String>, TableCell<TableMacroRow, String>> hotKeyFactory = new Callback<TableColumn<TableMacroRow, String>, TableCell<TableMacroRow, String>>() {
         @Override
         public TableCell<TableMacroRow, String> call(final TableColumn<TableMacroRow, String> param) {
             final TableCell<TableMacroRow, String> cell = new TableCell<TableMacroRow, String>() {
 
                 private final ToggleButton btn = new ToggleButton("Action");
-                Integer first = null;
-                Integer second = null;
                 Boolean listening = false;
 
                 {
@@ -29,53 +30,50 @@ public class TableCellFactories {
                 }
 
                 void startListening() {
-                    listening = true;
-                    first = second = null;
-                    writeResult();
-                    btn.setOnKeyPressed(ke -> {
-                        if (!btn.isSelected()) {
-                            stopListening();
+                    hotkeyListener.lock();
+                    hotkeyListener.reset();
+                    hotkeyListener.setInvoker(new HotkeyListener.Invoker() {
+                        @Override
+                        public void writeRes(Keys key) {
+                            writeResult(key);
                         }
-                        int keyCode = ke.getCode().getCode();
-                        if (first == null) {
-                            first = keyCode;
-                            writeResult();
-                        } else if (second == null && keyCode != first) {
-                            second = keyCode;
+
+                        @Override
+                        public void stop() {
                             stopListening();
                         }
                     });
+                    hotkeyListener.startListening();
+                    listening = true;
                 }
 
-                void stopListening() {
+                synchronized void stopListening() {
                     if (listening) {
                         validate();
-                        writeResult();
-                        btn.setOnKeyPressed(null);
-                        first = second = null;
+                        hotkeyListener.stopListening();
                         listening = false;
                     }
                 }
 
-                void writeResult() {
+                synchronized void writeResult(Keys hotkey) {
                     TableMacroRow data = getTableView().getItems().get(getIndex());
-                    System.out.println(String.format("%d %d", first, second));
-                    data.setKeys(first, second);
+                    System.out.println(String.format("%d %d", hotkey.getFirst().get(), hotkey.getSecond().get()));
+                    data.setKeys(hotkey);
                     btn.setText(data.getHotkey());
                 }
 
                 boolean validate() {
                     TableMacroRow data = getTableView().getItems().get(getIndex());
-                    if (data.equalKeys(first, second))
-                        return true;
+                    var hotkey = data.getMacro().getHotKey();
                     for (var macroRow : getTableView().getItems()) {
-                        if (macroRow.equalKeys(first, second)) {
+                        if (data != macroRow && macroRow.equalKeys(hotkey)) {
                             Alert alert = new Alert(Alert.AlertType.ERROR);
                             alert.setTitle("Wrong HotKey");
                             alert.setHeaderText(null);
-                            alert.setContentText("Hot key is already set for another macro");
+                            alert.setContentText(String.format("Hot key is already set for macro '%s", macroRow.getMacroName()));
                             alert.showAndWait();
-                            second = first = null;
+                            data.resetKeys();
+                            btn.setText(data.getHotkey());
                             return false;
                         }
                     }
@@ -122,6 +120,33 @@ public class TableCellFactories {
                     }
                 }
             };
+            return cell;
+        }
+    };
+
+    static Callback<TableColumn<TableMacroRow, String>, TableCell<TableMacroRow, String>> NameFactory = new Callback<TableColumn<TableMacroRow, String>, TableCell<TableMacroRow, String>>() {
+        @Override
+        public TableCell<TableMacroRow, String> call(final TableColumn<TableMacroRow, String> param) {
+            final TableCell<TableMacroRow, String> cell = new TableCell<TableMacroRow, String>() {
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                    } else {
+                        setText(item);
+                    }
+                }
+            };
+
+            cell.setOnMouseClicked(e -> {
+                if (e.getButton().equals(MouseButton.PRIMARY)) {
+                    if (e.getClickCount() == 2) {
+                        var data = Main.main.table.getSelectionModel().getSelectedItems();
+                        Main.main.editMacro(data.get(0).macro_.getFile());
+                    }
+                }
+            });
             return cell;
         }
     };

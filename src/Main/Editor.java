@@ -60,10 +60,14 @@ public class Editor {
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("MCR files (*.mcr)", "*.mcr");
         chooser.getExtensionFilters().add(extFilter);
         File file = chooser.showOpenDialog(Controller.primaryStage);
+        openMacro(file);
+    }
+
+    public void openMacro(File file) {
         if (file != null) {
             try (FileReader fileStream = new FileReader(file);
                  BufferedReader bufferedReader = new BufferedReader(fileStream)) {
-                String line = null;
+                String line;
                 StringBuilder sb = new StringBuilder();
                 while ((line = bufferedReader.readLine()) != null) {
                     sb.append(line);
@@ -120,7 +124,7 @@ public class Editor {
             macro.loadInstructions();
             macro.robot_ = new Robot();
             String msg = macro.readMacro(editArea.getText());
-            if (msg != "")
+            if (msg.isEmpty())
                 messages.setText(msg);
         } catch (Exception e) {
             messages.setText(e.getMessage());

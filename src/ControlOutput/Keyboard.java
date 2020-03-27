@@ -14,15 +14,14 @@ public class Keyboard {
     static public Robot robot;
     static Validator v = Validator.getVaidator();
 
-    public Keyboard(Robot r) {
-        robot = r;
+    public Keyboard() {
     }
 
     public static class pressKey implements Executor.Instruction {
         int arg0;
-        static Map<String, Integer> set = new HashMap<String, Integer>();
+        static Map<String, Integer> set = new HashMap<>();
 
-        {
+        static {
             Field[] fields = KeyEvent.class.getDeclaredFields();
             try {
                 for (Field f : fields) {
@@ -84,8 +83,8 @@ public class Keyboard {
     }
 
     public static class Write implements Executor.Instruction {
-        ArrayList<Integer> listOfKeys = new ArrayList<Integer>();
-        static Map<String, Integer> set = new HashMap<String, Integer>();
+        ArrayList<Integer> listOfKeys = new ArrayList<>();
+        static Map<String, Integer> set = new HashMap<>();
 
         @Override
         public void init(String[] args) throws Validator.ParserExcetption {

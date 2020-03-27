@@ -7,6 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
 
 import java.awt.*;
 import java.io.*;
@@ -46,7 +47,17 @@ public class Main implements Initializable {
     }
 
     public void openMacro() {
-        Editor.editor.openMacro();
+        clearMsg();
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Open Macro File");
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("MCR files (*.mcr)", "*.mcr");
+        chooser.getExtensionFilters().add(extFilter);
+        File file = chooser.showOpenDialog(Controller.primaryStage);
+        macrosManager.addNewMacro(file);
+    }
+
+    public void editMacro(File macroFile) {
+        Editor.editor.openMacro(macroFile);
         Controller.map.activate(Controller.Scenes.editor);
     }
 
@@ -91,12 +102,13 @@ public class Main implements Initializable {
         } catch (Exception e) {
             messages.setText(e.getMessage());
         }
+        macro.setCellFactory(TableCellFactories.NameFactory);
         hotkey.setCellFactory(TableCellFactories.hotKeyFactory);
         enabled.setCellFactory(TableCellFactories.EnableFactory);
-        macro.setCellValueFactory(new PropertyValueFactory<TableMacroRow, String>("macroName"));
-        hotkey.setCellValueFactory(new PropertyValueFactory<TableMacroRow, String>("hotkey"));
-        enabled.setCellValueFactory(new PropertyValueFactory<TableMacroRow, Boolean>("enabled"));
-        table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        macro.setCellValueFactory(new PropertyValueFactory<>("macroName"));
+        hotkey.setCellValueFactory(new PropertyValueFactory<>("hotkey"));
+        enabled.setCellValueFactory(new PropertyValueFactory<>("enabled"));
+        table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         macrosManager.load();
         macrosManager.validateData();
     }
@@ -143,10 +155,10 @@ public class Main implements Initializable {
                     StringBuilder sb = new StringBuilder();
                     sb.append(row.getMacro().getPath().toString() + separator);
                     sb.append(row.getEnabled());
-                    if (row.getMacro().getFirstKey() != null)
-                        sb.append(separator + row.getMacro().getFirstKey().toString());
-                    if (row.getMacro().getSecondtKey() != null)
-                        sb.append(separator + row.getMacro().getSecondtKey().toString());
+                    if (row.getMacro().getFirstKey().isSet())
+                        sb.append(separator + row.getMacro().getFirstKey().get().toString());
+                    if (row.getMacro().getSecondtKey().isSet())
+                        sb.append(separator + row.getMacro().getSecondtKey().get().toString());
                     writer.println(sb.toString());
                 }
                 writer.close();
