@@ -67,8 +67,8 @@ public class MacrosListener implements NativeKeyListener {
     }
 
     public void addMacro(Macro macro) {
-        Integer first = macro.getFirstKey();
-        Integer second = macro.getSecondtKey();
+        Integer first = macro.getFirstKey().get();
+        Integer second = macro.getSecondtKey().get();
         var listener = new MacroListener(macro);
         register(listener, first);
         if (second != null)

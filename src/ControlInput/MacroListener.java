@@ -5,49 +5,53 @@ import Instructions.Macro;
 public class MacroListener {
 
     public Macro macro_;
-    Keys keys;
+    public Keys keys;
+    public Keys.Key first;
+    public Keys.Key second;
 
     public MacroListener(Macro macro) {
         macro_ = macro;
-        keys = new Keys(macro.getFirstKey(), macro.getSecondtKey());
+        keys = macro_.getHotKey();
+        first = keys.getFirst();
+        second = keys.getSecond();
     }
 
     @Override
     public boolean equals(Object o) {
         // no need for (o instanceof Point) by design
-        return keys.first.code == ((MacroListener) o).keys.first.code && keys.second.code == ((MacroListener) o).keys.second.code;
+        return macro_.equalKeys(((MacroListener) o).macro_);
     }
 
     @Override
     public int hashCode() {
-        return keys.first.code * 31 + keys.second.code;
+        return keys.getFirst().get() * 31 + keys.getSecond().get();
     }
 
     boolean KeyCheckPressed(int code) {
-        if (keys.second == null) {
-            if (keys.first.code == code) {
-                keys.first.press();
+        if (second.isSet()) {
+            if (first.equals(code)) {
+                first.press();
                 return true;
             }
         } else {
-            if (keys.second.code == code) {
-                keys.second.press();
-                if (keys.first.pressed())
+            if (second.equals(code)) {
+                second.press();
+                if (first.pressed())
                     return true;
             }
-            if (keys.first.code == code) {
-                keys.first.press();
+            if (first.equals(code)) {
+                first.press();
             }
         }
         return false;
     }
 
     boolean KeyCheckReleased(int code) {
-        if (keys.second != null && keys.second.code == code) {
-            keys.second.release();
+        if (second.isSet() && second.equals(code)) {
+            second.release();
         }
-        if (keys.first.code == code) {
-            keys.first.release();
+        if (first.isSet() && first.equals(code)) {
+            first.release();
         }
         return false;
     }

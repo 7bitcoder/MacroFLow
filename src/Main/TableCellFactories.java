@@ -4,7 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.util.Callback;
 
-public class TableFactories {
+public class TableCellFactories {
     static ToggleGroup tg = new ToggleGroup();
 
     static Callback<TableColumn<TableMacroRow, String>, TableCell<TableMacroRow, String>> hotKeyFactory = new Callback<TableColumn<TableMacroRow, String>, TableCell<TableMacroRow, String>>() {
@@ -18,7 +18,6 @@ public class TableFactories {
                 Boolean listening = false;
 
                 {
-
                     btn.setToggleGroup(tg);
                     btn.setOnMouseClicked(e -> {
                         if (btn.isSelected()) {
@@ -37,7 +36,7 @@ public class TableFactories {
                         if (!btn.isSelected()) {
                             stopListening();
                         }
-                        Integer keyCode = ke.getCode().getCode();
+                        int keyCode = ke.getCode().getCode();
                         if (first == null) {
                             first = keyCode;
                             writeResult();

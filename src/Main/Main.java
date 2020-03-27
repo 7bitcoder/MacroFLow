@@ -59,7 +59,7 @@ public class Main implements Initializable {
         } else {
             for (var row : table.getItems()) {
                 if (row.getEnabled()) {
-                    if (row.equalKeys(null, null)) {
+                    if (row.getMacro().emptyKeys()) {
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Hot key not set");
                         alert.setHeaderText(null);
@@ -91,8 +91,8 @@ public class Main implements Initializable {
         } catch (Exception e) {
             messages.setText(e.getMessage());
         }
-        hotkey.setCellFactory(TableFactories.hotKeyFactory);
-        enabled.setCellFactory(TableFactories.EnableFactory);
+        hotkey.setCellFactory(TableCellFactories.hotKeyFactory);
+        enabled.setCellFactory(TableCellFactories.EnableFactory);
         macro.setCellValueFactory(new PropertyValueFactory<TableMacroRow, String>("macroName"));
         hotkey.setCellValueFactory(new PropertyValueFactory<TableMacroRow, String>("hotkey"));
         enabled.setCellValueFactory(new PropertyValueFactory<TableMacroRow, Boolean>("enabled"));
@@ -186,7 +186,7 @@ public class Main implements Initializable {
             try {
                 if (recentFile.exists()) {
                     BufferedReader bufferedReader = new BufferedReader(new FileReader(recentFile));
-                    String line = null;
+                    String line;
                     while ((line = bufferedReader.readLine()) != null) {
                         var values = line.split(String.valueOf(separator));
                         File f = new File(values[0]);
@@ -194,7 +194,7 @@ public class Main implements Initializable {
                         if (len < 2 || len > 4 || !f.exists())
                             continue;
                         Integer first, second;
-                        Boolean en;
+                        boolean en;
                         try {
                             en = Boolean.parseBoolean(values[1]);
                             first = (len >= 3 ? Integer.parseInt(values[2]) : null);

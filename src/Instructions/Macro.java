@@ -1,5 +1,6 @@
 package Instructions;
 
+import ControlInput.Keys;
 import ControlOutput.Validator;
 
 import java.awt.*;
@@ -17,8 +18,7 @@ public class Macro implements IMacro {
     private String name_;
     private File file_;
     private Path path_;
-    private Integer firstKey_;
-    private Integer secondKey_;
+    private Keys hotKey = new Keys();
     private boolean enable_ = false;
 
     static {
@@ -36,8 +36,7 @@ public class Macro implements IMacro {
     }
 
     public void setKeys(Integer f, Integer s) {
-        firstKey_ = f;
-        secondKey_ = s;
+        hotKey.setKeys(f, s);
     }
 
     public void setEnable(Boolean en) {
@@ -47,12 +46,16 @@ public class Macro implements IMacro {
             enable_ = en;
     }
 
-    public Integer getFirstKey() {
-        return firstKey_;
+    public Keys getHotKey() {
+        return hotKey;
     }
 
-    public Integer getSecondtKey() {
-        return secondKey_;
+    public Keys.Key getFirstKey() {
+        return hotKey.getFirst();
+    }
+
+    public Keys.Key getSecondtKey() {
+        return hotKey.getSecond();
     }
 
     public Boolean getEnable() {
@@ -76,12 +79,20 @@ public class Macro implements IMacro {
         return path_.equals(obj);
     }
 
+    public boolean equalKeys(Macro mac) {
+        return hotKey.equals(mac.getHotKey());
+    }
+
+    public boolean emptyKeys() {
+        return !getFirstKey().isSet() && !getSecondtKey().isSet();
+    }
+
     public static void loadInstructions() throws Exception {
         generator_.loadInstructions();
     }
 
     public String readMacro() {
-        FileReader fileStream = null;
+        FileReader fileStream;
         try {
             fileStream = new FileReader(file_);
         } catch (FileNotFoundException e) {
@@ -135,7 +146,7 @@ public class Macro implements IMacro {
 class MakeInstructions {
     public Executor.Instruction makeInstruction(String[] args) throws Validator.ParserExcetption, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         if (args.length == 0)
-            throw new Validator.ParserExcetption(String.format("Line is empty: %s", args[0]));
+            throw new Validator.ParserExcetption("Line is empty");
         var instruction = getInstruction(args[0]); //name
         Executor.Instruction instance = instruction.getDeclaredConstructor().newInstance();
         instance.init(args);

@@ -1,10 +1,9 @@
 package Main;
 
+import ControlInput.Keys;
 import Instructions.Macro;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
-
-import java.awt.event.KeyEvent;
 
 public class TableMacroRow {
     public SimpleStringProperty macroName = new SimpleStringProperty("");
@@ -14,7 +13,7 @@ public class TableMacroRow {
 
     public TableMacroRow(Macro mac) {
         macro_ = mac;
-        setKeys(macro_.getFirstKey(), macro_.getSecondtKey());
+        updateHotKey();
         setMacroName(macro_.getName());
         setEnable(macro_.getEnable());
     }
@@ -48,20 +47,17 @@ public class TableMacroRow {
         return hotkey.get();
     }
 
-    public void setKeys(Integer first, Integer sec) {
-        macro_.setKeys(first, sec);
-        String hotk = "Not Set";
-        if (first != null) {
-            hotk = KeyEvent.getKeyText(first);
-            if (sec != null) {
-                hotk += "+" + KeyEvent.getKeyText(sec);
-            }
-        }
-        setHotkey(hotk);
+    private void updateHotKey() {
+        setHotkey(macro_.getHotKey().toString());
     }
 
     public Macro getMacro() {
         return macro_;
+    }
+
+    public void setKeys(Integer fir, Integer sec) {
+        macro_.setKeys(fir, sec);
+        updateHotKey();
     }
 
     public boolean equalsMacro(Object obj) {
@@ -69,6 +65,14 @@ public class TableMacroRow {
     }
 
     public boolean equalKeys(Integer fir, Integer sec) {
-        return fir == macro_.getFirstKey() && sec == macro_.getSecondtKey();
+        return equalKeys(new Keys(fir, sec));
+    }
+
+    public boolean equalKeys(Keys keys) {
+        return macro_.getHotKey().equals(keys);
+    }
+
+    public boolean equalKeys(Macro mac) {
+        return macro_.equalKeys(mac);
     }
 }
