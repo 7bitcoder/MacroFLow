@@ -13,8 +13,10 @@ import java.util.Map;
 public class Macro implements IMacro {
     static MakeInstructions generator_ = new MakeInstructions();
     private Executor execList_ = new Executor();
+
     private volatile boolean running_ = false;
     public static Robot robot_;
+
     private String name_;
     private File file_;
     private Path path_;
@@ -38,6 +40,14 @@ public class Macro implements IMacro {
         name_ = file.getName();
         setEnable(en);
         setKeys(fir, sec);
+    }
+
+    public int getInstructionIndex() {
+        return execList_.getInstructionIndex();
+    }
+
+    public void JumpToInstruction(int in) {
+        execList_.setProgramCounter(in);
     }
 
     public void setKeys(Keys keys) {
@@ -124,8 +134,10 @@ public class Macro implements IMacro {
         try {
             while ((st = br.readLine()) != null) {
                 index++;
-                execList_.addInstruction(generator_.makeInstruction(st.split(" ")));
+                execList_.addInstruction(generator_.makeInstruction(st.split(" "), this));
             }
+            if (!execList_.check())
+                throw new Validator.ParserExcetption("Closing commands error, every control commands have to be closed by instructions endloop/endif");
         } catch (Validator.ParserExcetption e) {
             return String.format("Macro: %s, line: %d. %s", name_, index, e.getMessage());
         } catch (Exception e) {
@@ -153,12 +165,12 @@ public class Macro implements IMacro {
 }
 
 class MakeInstructions {
-    public Executor.Instruction makeInstruction(String[] args) throws Validator.ParserExcetption, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    public Executor.Instruction makeInstruction(String[] args, Executor macro) throws Validator.ParserExcetption, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         if (args.length == 0)
             throw new Validator.ParserExcetption("Line is empty");
         var instruction = getInstruction(args[0]); //name
         Executor.Instruction instance = instruction.getDeclaredConstructor().newInstance();
-        instance.init(args);
+        instance.init(args, macro);
         return instance;
     }
 

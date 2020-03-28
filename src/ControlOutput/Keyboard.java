@@ -1,6 +1,7 @@
 package ControlOutput;
 
 import Instructions.Executor;
+import Instructions.Macro;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -40,7 +41,7 @@ public class Keyboard {
         }
 
         @Override
-        public void init(String[] args) throws Validator.ParserExcetption {
+        public void init(String[] args, Macro macro) throws Validator.ParserExcetption {
             v.valSize(1, args);
             var str = args[1].toLowerCase();
             if (str.length() == 1) {
@@ -63,7 +64,7 @@ public class Keyboard {
         int arg0;
 
         @Override
-        public void init(String[] args) throws Validator.ParserExcetption {
+        public void init(String[] args, Macro macro) throws Validator.ParserExcetption {
             v.valSize(1, args);
             var str = args[1].toLowerCase();
             if (str.length() == 1) {
@@ -87,7 +88,7 @@ public class Keyboard {
         static Map<String, Integer> set = new HashMap<>();
 
         @Override
-        public void init(String[] args) throws Validator.ParserExcetption {
+        public void init(String[] args, Macro macro) throws Validator.ParserExcetption {
             v.valSize(1, args);
             var cnt = 0;
             for (char c : args[1].toCharArray()) {

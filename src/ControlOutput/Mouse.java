@@ -1,6 +1,7 @@
 package ControlOutput;
 
 import Instructions.Executor;
+import Instructions.Macro;
 
 import java.awt.*;
 
@@ -16,7 +17,7 @@ public class Mouse {
         int arg1 = 0;
 
         @Override
-        public void init(String[] args) throws Validator.ParserExcetption {
+        public void init(String[] args, Macro macro) throws Validator.ParserExcetption {
             v.valSize(2, args);
             arg0 = v.valNum(args, 1);
             arg1 = v.valNum(args, 2);
