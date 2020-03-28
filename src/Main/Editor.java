@@ -3,10 +3,10 @@ package Main;
 import Instructions.Macro;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.stage.FileChooser;
 
-import java.awt.*;
 import java.io.*;
 
 public class Editor {
@@ -20,6 +20,8 @@ public class Editor {
     Button saver;
     @FXML
     Button loader;
+    @FXML
+    public Label MacroName;
 
     private Editor() {
         System.out.println("editor");
@@ -79,6 +81,7 @@ public class Editor {
                 messages.setText(String.format("Could Not Open File %s, Error: %s", file.getName(), ex.getMessage()));
             }
             actualFile = file;
+            MacroName.setText(file.getName());
         }
     }
 
@@ -87,10 +90,15 @@ public class Editor {
         if (actualFile != null) {
             saveActual();
             editArea.setText("");
+            MacroName.setText("");
             actualFile = null;
         }
     }
 
+
+    public void helpInstructions() {
+
+    }
 
     private void saveNewFile() {
         clearMsg();
@@ -121,10 +129,10 @@ public class Editor {
             if (!actualFile.exists())
                 throw new Exception(String.format("Actual macro file '%s' does not exist", actualFile.getName()));
             Macro macro = new Macro(actualFile, null, null, null);
-            macro.loadInstructions();
-            macro.robot_ = new Robot();
             String msg = macro.readMacro(editArea.getText());
-            if (msg.isEmpty())
+            if (msg == null)
+                messages.setText("Macro validated");
+            else
                 messages.setText(msg);
         } catch (Exception e) {
             messages.setText(e.getMessage());

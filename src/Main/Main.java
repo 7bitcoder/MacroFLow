@@ -33,6 +33,8 @@ public class Main implements Initializable {
     TableColumn<TableMacroRow, Boolean> enabled;
     @FXML
     TextArea messages;
+    @FXML
+    ToggleButton listenButton;
 
     public void close() {
         macrosManager.saveToRecent();
@@ -56,9 +58,22 @@ public class Main implements Initializable {
         macrosManager.addNewMacro(file);
     }
 
-    public void editMacro(File macroFile) {
-        Editor.editor.openMacro(macroFile);
+    public void editMacro() {
+        var data = Main.main.table.getSelectionModel().getSelectedItems();
+        if (data.size() == 0) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Macro not selected");
+            alert.setHeaderText(null);
+            alert.setContentText("Select macro to edit");
+            alert.showAndWait();
+            return;
+        }
+        Editor.editor.openMacro(data.get(0).macro_.getFile());
         Controller.map.activate(Controller.Scenes.editor);
+    }
+
+    public void helpInstructions() {
+
     }
 
     Boolean isListening = false;
@@ -66,7 +81,7 @@ public class Main implements Initializable {
     public void startListening() {
         if (isListening) {
             MacrosListener.macrosListener.stopListening();
-            isListening = false;
+            stopListen();
         } else {
             for (var row : table.getItems()) {
                 if (row.getEnabled()) {
@@ -76,12 +91,14 @@ public class Main implements Initializable {
                         alert.setHeaderText(null);
                         alert.setContentText(String.format("Hot key of macro '%s' is not set", row.getMacro().getName()));
                         alert.showAndWait();
+                        stopListen();
                         return;
                     } else {
                         var macro = row.getMacro();
                         var msg = macro.readMacro();
                         if (msg != null) {
                             messages.setText(msg);
+                            stopListen();
                             return;
                         }
                         MacrosListener.macrosListener.addMacro(macro);
@@ -89,8 +106,18 @@ public class Main implements Initializable {
                 }
             }
             MacrosListener.macrosListener.startListening();
-            isListening = true;
+            startListen();
         }
+    }
+
+    private void stopListen() {
+        isListening = false;
+        listenButton.setSelected(false);
+    }
+
+    private void startListen() {
+        isListening = true;
+        listenButton.setSelected(true);
     }
 
     @Override

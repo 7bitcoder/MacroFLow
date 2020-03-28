@@ -142,8 +142,7 @@ public class TableCellFactories {
             cell.setOnMouseClicked(e -> {
                 if (e.getButton().equals(MouseButton.PRIMARY)) {
                     if (e.getClickCount() == 2) {
-                        var data = Main.main.table.getSelectionModel().getSelectedItems();
-                        Main.main.editMacro(data.get(0).macro_.getFile());
+                        Main.main.editMacro();
                     }
                 }
             });

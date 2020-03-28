@@ -25,13 +25,12 @@
             <MenuItem mnemonicParsing="false" onAction="#saverSave" text="Save" />
             <MenuItem mnemonicParsing="false" onAction="#saveAs" text="Save As…" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Quit" />
+            <MenuItem mnemonicParsing="false" onAction="#changeToMain" text="Quit Editor" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">
           <items>
-                  <MenuItem mnemonicParsing="false" text="Available macro instructions" />
+                  <MenuItem mnemonicParsing="false" onAction="#helpInstructions" text="Available macro instructions" />
             <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
           </items>
         </Menu>
@@ -39,13 +38,13 @@
     </MenuBar>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="407.0" prefWidth="648.0" style="-fx-background-color: #e6e6e6;" VBox.vgrow="ALWAYS">
       <children>
-            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="24.0" prefHeight="38.0" prefWidth="296.0" text="Macro Editor" textAlignment="CENTER">
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="177.0" layoutY="1.0" prefHeight="38.0" prefWidth="296.0" text="Macro Editor" textAlignment="CENTER">
                <font>
                   <Font size="22.0" />
                </font>
             </Label>
-            <Button fx:id="saver" layoutX="356.0" layoutY="220.0" mnemonicParsing="false" onMousePressed="#saverSave" prefHeight="38.0" prefWidth="94.0" text="Save" />
-            <Button layoutX="476.0" layoutY="220.0" mnemonicParsing="false" onMousePressed="#validate" prefHeight="38.0" prefWidth="119.0" text="Check your macro" />
+            <Button fx:id="saver" layoutX="354.0" layoutY="326.0" mnemonicParsing="false" onMouseClicked="#saverSave" prefHeight="55.0" prefWidth="105.0" text="Save" />
+            <Button layoutX="474.0" layoutY="326.0" mnemonicParsing="false" onMouseClicked="#validate" prefHeight="55.0" prefWidth="123.0" text="Check your macro" />
             <TextArea fx:id="editArea" layoutX="20.0" layoutY="38.0" prefHeight="382.0" prefWidth="305.0" promptText="Write macro, to find available instructions see help.">
                <font>
                   <Font size="15.0" />
@@ -54,18 +53,23 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
             </TextArea>
-            <TextArea fx:id="messages" editable="false" layoutX="356.0" layoutY="69.0" opacity="0.67" prefHeight="108.0" prefWidth="239.0" />
-            <TextArea editable="false" layoutX="403.0" layoutY="304.0" opacity="0.39" prefHeight="68.0" prefWidth="145.0" text="Press keys to set &#10;macro trigger">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </TextArea>
-            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="352.0" layoutY="19.0" prefHeight="38.0" prefWidth="239.0" text="Macro validation messages" textAlignment="CENTER">
+            <TextArea fx:id="messages" editable="false" layoutX="355.0" layoutY="175.0" opacity="0.67" prefHeight="108.0" prefWidth="239.0" wrapText="true" />
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="355.0" layoutY="128.0" prefHeight="38.0" prefWidth="239.0" text="Macro validation messages" textAlignment="CENTER">
                <font>
                   <Font size="16.0" />
                </font>
             </Label>
             <Button fx:id="saver1" layoutX="24.0" layoutY="7.0" mnemonicParsing="false" onMousePressed="#changeToMain" prefHeight="25.0" prefWidth="51.0" text="&lt;-" />
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="354.0" layoutY="39.0" prefHeight="38.0" prefWidth="239.0" text="Macro:" textAlignment="CENTER">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <Label fx:id="MacroName" alignment="CENTER" contentDisplay="CENTER" layoutX="354.0" layoutY="77.0" prefHeight="38.0" prefWidth="239.0" textAlignment="CENTER">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
       </children>
     </AnchorPane>
   </children>
