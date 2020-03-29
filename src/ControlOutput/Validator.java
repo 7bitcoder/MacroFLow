@@ -1,5 +1,6 @@
 package ControlOutput;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,7 +37,7 @@ public class Validator {
             if (args.length - 1 == siz)
                 found = true;
         if (!found)
-            throw new ParserExcetption(String.format("Wrong arguments number. Instruction %s should have %s arguments", args[0], size.toString()));
+            throw new ParserExcetption(String.format("Wrong arguments number. Instruction %s should have %s arguments", args[0], Arrays.toString(size)));
         return args.length;
     }
 

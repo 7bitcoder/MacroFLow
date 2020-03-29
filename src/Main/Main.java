@@ -1,13 +1,21 @@
 package Main;
 
 import ControlInput.MacrosListener;
+import Instructions.Executor;
 import Instructions.Macro;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 import java.awt.*;
 import java.io.*;
@@ -73,12 +81,36 @@ public class Main implements Initializable {
     }
 
     public void helpInstructions() {
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(10));
 
+        Text text = new Text(InstructionHelp.help);
+        grid.add(text, 0, 0);
+
+        Button bnOK = new Button("OK");
+        grid.add(bnOK, 0, 2);
+        Scene dialog = new Scene(grid);
+
+        Stage stage = new Stage();
+        stage.setTitle("Available instructions");
+        stage.setScene(dialog);
+
+        bnOK.setOnAction((e) -> {
+            stage.close();
+        });
+
+        stage.show();
+
+        stage.toFront();
     }
 
     Boolean isListening = false;
 
     public void startListening() {
+        clearMsg();
         if (isListening) {
             MacrosListener.macrosListener.stopListening();
             stopListen();
@@ -124,7 +156,7 @@ public class Main implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         //table.setItems();
         try {
-            Macro.loadInstructions();
+            Executor.loadInstructions();
             Macro.robot_ = new Robot();
         } catch (Exception e) {
             messages.setText(e.getMessage());

@@ -97,7 +97,7 @@ public class Editor {
 
 
     public void helpInstructions() {
-
+        Main.main.helpInstructions();
     }
 
     private void saveNewFile() {
@@ -145,7 +145,7 @@ public class Editor {
         try {
             PrintWriter writer;
             writer = new PrintWriter(file);
-            writer.println(content);
+            writer.print(content);
             writer.close();
         } catch (IOException ex) {
             messages.setText(String.format("Could Not Save File: Error %s", ex.getMessage()));

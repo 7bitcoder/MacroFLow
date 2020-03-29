@@ -1,18 +1,13 @@
 package Instructions;
 
 import ControlInput.Keys;
-import ControlOutput.Validator;
 
 import java.awt.*;
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Macro implements IMacro {
-    static MakeInstructions generator_ = new MakeInstructions();
-    private Executor execList_ = new Executor();
+    private Executor executor_ = new Executor();
 
     private volatile boolean running_ = false;
     public static Robot robot_;
@@ -40,14 +35,6 @@ public class Macro implements IMacro {
         name_ = file.getName();
         setEnable(en);
         setKeys(fir, sec);
-    }
-
-    public int getInstructionIndex() {
-        return execList_.getInstructionIndex();
-    }
-
-    public void JumpToInstruction(int in) {
-        execList_.setProgramCounter(in);
     }
 
     public void setKeys(Keys keys) {
@@ -106,10 +93,6 @@ public class Macro implements IMacro {
         return !getFirstKey().isSet() && !getSecondtKey().isSet();
     }
 
-    public static void loadInstructions() throws Exception {
-        generator_.loadInstructions();
-    }
-
     public String readMacro() {
         FileReader fileStream;
         try {
@@ -129,27 +112,11 @@ public class Macro implements IMacro {
     }
 
     private String read(BufferedReader br) {
-        String st;
-        int index = 0;
-        try {
-            while ((st = br.readLine()) != null) {
-                index++;
-                execList_.addInstruction(generator_.makeInstruction(st.split(" "), this));
-            }
-            if (!execList_.check())
-                throw new Validator.ParserExcetption("Closing commands error, every control commands have to be closed by instructions endloop/endif");
-        } catch (Validator.ParserExcetption e) {
-            return String.format("Macro: %s, line: %d. %s", name_, index, e.getMessage());
-        } catch (Exception e) {
-            return e.getMessage();
-        } finally {
-            try {
-                br.close();
-            } catch (IOException e) {
-                return "Could not close properly macro file";
-            }
-        }
-        return null;
+        executor_.reset();
+        String msg = executor_.readInstructions(br);
+        if (msg != null)
+            return String.format("Macro: %s. ", msg);
+        return msg;
     }
 
     public boolean isRunning() {
@@ -158,41 +125,9 @@ public class Macro implements IMacro {
 
     synchronized public void runMacro() {
         running_ = true;
-        execList_.run();
+        executor_.run();
         running_ = false;
     }
 
 }
 
-class MakeInstructions {
-    public Executor.Instruction makeInstruction(String[] args, Executor macro) throws Validator.ParserExcetption, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        if (args.length == 0)
-            throw new Validator.ParserExcetption("Line is empty");
-        var instruction = getInstruction(args[0]); //name
-        Executor.Instruction instance = instruction.getDeclaredConstructor().newInstance();
-        instance.init(args, macro);
-        return instance;
-    }
-
-    private Class<? extends Executor.Instruction> getInstruction(String name) throws Validator.ParserExcetption {
-        var instr = availableInstructions.get(name.toLowerCase());
-        if (instr == null)
-            throw new Validator.ParserExcetption(String.format("Wrong macro instruction name %s", name));
-        return instr;
-    }
-
-    public void loadInstructions() throws Exception {
-        try {
-            Class[] classes = new Class[]{ControlOutput.Keyboard.class, ControlOutput.Mouse.class, ControlOutput.System.class};
-            for (var cl : classes) {
-                var innerClasses = cl.getClasses();
-                for (var iCl : innerClasses)
-                    availableInstructions.put(iCl.getSimpleName().toLowerCase(), (Class<? extends Executor.Instruction>) iCl);
-            }
-        } catch (Exception e) {
-            throw new Exception("Could not load available instructions");
-        }
-    }
-
-    Map<String, Class<? extends Executor.Instruction>> availableInstructions = new HashMap<String, Class<? extends Executor.Instruction>>();
-}
