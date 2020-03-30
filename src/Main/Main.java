@@ -109,11 +109,12 @@ public class Main implements Initializable {
 
     Boolean isListening = false;
 
-    public void startListening() {
+    public boolean startListening() {
         clearMsg();
         if (isListening) {
             MacrosListener.macrosListener.stopListening();
             stopListen();
+            return false;
         } else {
             for (var row : table.getItems()) {
                 if (row.getEnabled()) {
@@ -124,14 +125,14 @@ public class Main implements Initializable {
                         alert.setContentText(String.format("Hot key of macro '%s' is not set", row.getMacro().getName()));
                         alert.showAndWait();
                         stopListen();
-                        return;
+                        return false;
                     } else {
                         var macro = row.getMacro();
                         var msg = macro.readMacro();
                         if (msg != null) {
                             messages.setText(msg);
                             stopListen();
-                            return;
+                            return false;
                         }
                         MacrosListener.macrosListener.addMacro(macro);
                     }
@@ -139,6 +140,7 @@ public class Main implements Initializable {
             }
             MacrosListener.macrosListener.startListening();
             startListen();
+            return true;
         }
     }
 
