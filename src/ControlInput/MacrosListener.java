@@ -17,6 +17,7 @@ public class MacrosListener implements NativeKeyListener {
     }
 
     //map keys too macros using this key
+    MacroListener actualRunning = null;
     Map<Integer, ArrayList<MacroListener>> listening = new HashMap<Integer, ArrayList<MacroListener>>();
     volatile boolean macroRunning = false;
 
@@ -32,17 +33,17 @@ public class MacrosListener implements NativeKeyListener {
 
     @Override
     public void nativeKeyPressed(NativeKeyEvent e) {
-        if (macroRunning)
-            return;
-        ArrayList<MacroListener> list = listening.get(e.getKeyCode());
-        if (list == null)
-            return;
-        for (var listener : list)
-            if (listener.KeyCheckPressed(e.getKeyCode())) {
-                macroRunning = true;
-                listener.runMacro();
-                macroRunning = false;
-            }
+        if (actualRunning == null) {
+            ArrayList<MacroListener> list = listening.get(e.getKeyCode());
+            if (list == null)
+                return;
+            for (var listener : list)
+                if (listener.KeyCheckPressed(e.getKeyCode())) {
+                    actualRunning = listener;
+                    listener.runMacro();
+                    macroRunning = false;
+                }
+        }
     }
 
     @Override

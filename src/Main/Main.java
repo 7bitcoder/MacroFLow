@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class Main implements Initializable {
-    static Main main = new Main();
+    public static Main main = new Main();
     private String[] macroPaths;
     static final char separator = '\035';
     static File recentFile = new File("recent.rcnt");
@@ -40,7 +40,7 @@ public class Main implements Initializable {
     @FXML
     TableColumn<TableMacroRow, Boolean> enabled;
     @FXML
-    TextArea messages;
+    public TextArea messages;
     @FXML
     ToggleButton listenButton;
 
@@ -109,7 +109,7 @@ public class Main implements Initializable {
 
     Boolean isListening = false;
 
-    public boolean startListening() {
+    synchronized public boolean startListening() {
         clearMsg();
         if (isListening) {
             MacrosListener.macrosListener.stopListening();

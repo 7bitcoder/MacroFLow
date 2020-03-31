@@ -134,4 +134,9 @@ public class Keys {
         first.reset();
         second.reset();
     }
+
+    void resetKeys() {
+        first.state = Key.State.released;
+        second.state = Key.State.released;
+    }
 }

@@ -1,8 +1,9 @@
 package ControlInput;
 
 import Instructions.Macro;
+import Main.Main;
 
-public class MacroListener {
+public class MacroListener implements Runnable {
 
     public Macro macro_;
     public Keys keys;
@@ -24,6 +25,10 @@ public class MacroListener {
     @Override
     public int hashCode() {
         return keys.getFirst().get() * 31 + keys.getSecond().get();
+    }
+
+    void resetKeys() {
+        keys.resetKeys();
     }
 
     boolean KeyCheckPressed(int code) {
@@ -55,8 +60,14 @@ public class MacroListener {
         return false;
     }
 
-    void runMacro() {
-        if (!macro_.isRunning())
-            macro_.runMacro();
+    @Override
+    public void run() {
+        try {
+            if (!macro_.isRunning())
+                macro_.runMacro();
+        } catch (Exception ex) {
+        } finally {
+            Main.main.messages.setText(String.format("Macro '%s' ended ", macro_.getName()));
+        }
     }
 }

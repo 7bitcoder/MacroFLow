@@ -79,9 +79,10 @@ public class mainGui extends Application {
             // the application stage in a bold font.
             java.awt.Font defaultFont = java.awt.Font.decode(null);
 
-            java.awt.MenuItem startListen = new java.awt.MenuItem("Listen");
-            startListen.addActionListener(event -> Platform.runLater(() -> {
+            java.awt.CheckboxMenuItem startListen = new java.awt.CheckboxMenuItem("Listen");
+            startListen.addItemListener(event -> Platform.runLater(() -> {
                 boolean res = Main.main.startListening();
+                startListen.setState(res);
             }));
 
             // to really exit the application, the user must go to the system tray icon
