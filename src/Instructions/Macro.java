@@ -68,7 +68,7 @@ public class Macro implements IMacro {
         return enable_;
     }
 
-    public String getName() {
+    synchronized public String getName() {
         return name_;
     }
 
@@ -123,7 +123,7 @@ public class Macro implements IMacro {
         return running_;
     }
 
-    synchronized public void runMacro() {
+    synchronized public void runMacro() throws InterruptedException {
         running_ = true;
         executor_.run();
         running_ = false;

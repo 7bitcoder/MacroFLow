@@ -2,7 +2,7 @@ package Instructions;
 
 public interface IMacro {
 
-    public void runMacro();
+    public void runMacro() throws InterruptedException;
 
     public boolean isRunning();
 

@@ -67,17 +67,19 @@ public class Main implements Initializable {
     }
 
     public void editMacro() {
-        var data = Main.main.table.getSelectionModel().getSelectedItems();
-        if (data.size() == 0) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Macro not selected");
-            alert.setHeaderText(null);
-            alert.setContentText("Select macro to edit");
-            alert.showAndWait();
-            return;
+        if (!isListening) {
+            var data = Main.main.table.getSelectionModel().getSelectedItems();
+            if (data.size() == 0) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Macro not selected");
+                alert.setHeaderText(null);
+                alert.setContentText("Select macro to edit");
+                alert.showAndWait();
+                return;
+            }
+            Editor.editor.openMacro(data.get(0).macro_.getFile());
+            Controller.map.activate(Controller.Scenes.editor);
         }
-        Editor.editor.openMacro(data.get(0).macro_.getFile());
-        Controller.map.activate(Controller.Scenes.editor);
     }
 
     public void helpInstructions() {

@@ -18,7 +18,7 @@ public class Executor {
     }
 
     public static interface Instruction {
-        public void run();
+        public void run() throws InterruptedException;
 
         public void init(String[] args, Executor exec) throws Validator.ParserExcetption;
     }
@@ -54,8 +54,8 @@ public class Executor {
                 throw new Validator.ParserExcetption(String.format("Requested jump label '%s' is not defined", entry.getKey()));
     }
 
-    public void run() {
-        for (programCounter = 0; programCounter < instructions.size(); programCounter++)
+    public void run() throws InterruptedException {
+        for (programCounter = 0; !Thread.interrupted() || programCounter < instructions.size(); programCounter++)
             instructions.get(programCounter).run();
     }
 

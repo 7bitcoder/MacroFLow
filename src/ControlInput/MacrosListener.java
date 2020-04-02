@@ -1,6 +1,7 @@
 package ControlInput;
 
 import Instructions.Macro;
+import Main.Main;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
@@ -12,36 +13,76 @@ import java.util.Map;
 
 public class MacrosListener implements NativeKeyListener {
     public static MacrosListener macrosListener = new MacrosListener();
+    private static Thread runner;
 
     private MacrosListener() {
+    }
+
+    private class MacroRunner implements Runnable {
+        private Macro macro_;
+
+        MacroRunner(Macro macro) {
+            macro_ = macro;
+        }
+
+        @Override
+        public void run() {
+            try {
+                macro_.runMacro();
+            } catch (Exception ex) {
+            } finally {
+                Main.main.messages.setText(String.format("Macro '%s' ended ", macro_.getName()));
+                macroRunning = false;
+            }
+        }
     }
 
     //map keys too macros using this key
     MacroListener actualRunning = null;
     Map<Integer, ArrayList<MacroListener>> listening = new HashMap<Integer, ArrayList<MacroListener>>();
-    volatile boolean macroRunning = false;
+    Integer actFirst;
+    Integer actSec;
+    volatile Boolean macroRunning = false;
 
     @Override
     public void nativeKeyReleased(NativeKeyEvent e) {
-        ArrayList<MacroListener> list = listening.get(e.getKeyCode());
-        if (list == null)
-            return;
-        for (var listener : list)
-            listener.KeyCheckReleased(e.getKeyCode());
+        var code = e.getKeyCode();
+        if (!macroRunning) {
+            ArrayList<MacroListener> list = listening.get(code);
+            if (list == null)
+                return;
+            for (var listener : list)
+                listener.KeyCheckReleased(code);
+        } else {
+            if (actSec == code || actFirst == code) {
+                actualRunning.KeyCheckReleased(code);
+            }
+        }
     }
 
 
     @Override
     public void nativeKeyPressed(NativeKeyEvent e) {
-        if (actualRunning == null) {
-            ArrayList<MacroListener> list = listening.get(e.getKeyCode());
+        var code = e.getKeyCode();
+        if (!macroRunning) {
+            ArrayList<MacroListener> list = listening.get(code);
             if (list == null)
                 return;
             for (var listener : list)
-                if (listener.KeyCheckPressed(e.getKeyCode())) {
+                if (listener.KeyCheckPressed(code)) {
                     actualRunning = listener;
-                    listener.runMacro();
-                    macroRunning = false;
+                    actualRunning.resetKeys();
+                    actFirst = actualRunning.first.get();
+                    actSec = actualRunning.second.get();
+                    macroRunning = true;
+                    runner = new Thread(new MacroRunner(actualRunning.macro_));
+                    runner.start();
+                }
+        } else {
+            if (actSec == code || actFirst == code)
+                if (actualRunning.KeyCheckPressed(code)) {
+                    runner.interrupt();
+                    actualRunning.resetKeys();
                 }
         }
     }

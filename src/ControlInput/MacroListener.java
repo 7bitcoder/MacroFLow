@@ -1,9 +1,8 @@
 package ControlInput;
 
 import Instructions.Macro;
-import Main.Main;
 
-public class MacroListener implements Runnable {
+public class MacroListener {
 
     public Macro macro_;
     public Keys keys;
@@ -60,14 +59,8 @@ public class MacroListener implements Runnable {
         return false;
     }
 
-    @Override
-    public void run() {
-        try {
-            if (!macro_.isRunning())
-                macro_.runMacro();
-        } catch (Exception ex) {
-        } finally {
-            Main.main.messages.setText(String.format("Macro '%s' ended ", macro_.getName()));
-        }
+    public void runMacro() throws InterruptedException {
+        if (!macro_.isRunning())
+            macro_.runMacro();
     }
 }

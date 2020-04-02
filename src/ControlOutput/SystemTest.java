@@ -74,7 +74,7 @@ class SystemTest {
     }
 
     @Test
-    void Add() throws Validator.ParserExcetption {
+    void Add() throws Validator.ParserExcetption, InterruptedException {
         actualInstruction = new System.Add();
         exec = new Executor();
         exec.variables.put("xddd", 2);
@@ -110,7 +110,7 @@ class SystemTest {
     }
 
     @Test
-    void Sub() throws Validator.ParserExcetption {
+    void Sub() throws Validator.ParserExcetption, InterruptedException {
         actualInstruction = new System.Sub();
         exec = new Executor();
         exec.variables.put("xddd", 2);
@@ -146,7 +146,7 @@ class SystemTest {
     }
 
     @Test
-    void Div() throws Validator.ParserExcetption {
+    void Div() throws Validator.ParserExcetption, InterruptedException {
         actualInstruction = new System.Div();
         exec = new Executor();
         exec.variables.put("xddd", 2);
@@ -177,7 +177,7 @@ class SystemTest {
     }
 
     @Test
-    void Label() throws Validator.ParserExcetption {
+    void Label() throws Validator.ParserExcetption, InterruptedException {
         actualInstruction = new System.Label();
         exec = new Executor();
         exec.JumpLabels.put("xddd", 2);
@@ -215,7 +215,7 @@ class SystemTest {
     }
 
     @Test
-    void Jump() throws Validator.ParserExcetption {
+    void Jump() throws Validator.ParserExcetption, InterruptedException {
         actualInstruction = new System.Jmp();
         exec = new Executor();
         exec.JumpLabels.put("xddd", 2);
@@ -250,7 +250,7 @@ class SystemTest {
     }
 
     @Test
-    void If() throws Validator.ParserExcetption {
+    void If() throws Validator.ParserExcetption, InterruptedException {
         actualInstruction = new System.If();
         exec = new Executor();
         exec.JumpLabels.put("xddd", 2);
@@ -337,7 +337,7 @@ class SystemTest {
     }
 
     @Test
-    void Loop() throws Validator.ParserExcetption {
+    void Loop() throws Validator.ParserExcetption, InterruptedException {
         actualInstruction = new System.Loop();
         exec = new Executor();
         exec.JumpLabels.put("xddd", 2);
@@ -392,7 +392,7 @@ class SystemTest {
     }
 
     @Test
-    void EndLoop() throws Validator.ParserExcetption {
+    void EndLoop() throws Validator.ParserExcetption, InterruptedException {
         actualInstruction = new System.EndLoop();
         exec = new Executor();
         exec.JumpLabels.put("xddd", 2);

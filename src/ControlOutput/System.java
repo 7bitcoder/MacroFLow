@@ -26,8 +26,8 @@ public class System {
         }
 
         @Override
-        public void run() {
-            robot.delay(arg0);
+        public void run() throws InterruptedException {
+            Thread.sleep(arg0);
         }
     }
 
@@ -56,11 +56,11 @@ public class System {
         }
 
         @Override
-        public void run() {
+        public void run() throws InterruptedException {
             robot.keyPress(KeyEvent.VK_CONTROL);
-            robot.delay(100);
+            Thread.sleep(100);
             robot.keyPress(KeyEvent.VK_V);
-            robot.delay(100);
+            Thread.sleep(100);
             robot.keyRelease(KeyEvent.VK_CONTROL);
             robot.keyRelease(KeyEvent.VK_V);
         }
