@@ -4,8 +4,8 @@ Macro flow is a simple tool to create macros, due to simplicity you can create m
 ## Interface
 interface contains two windows: main and editor. In the main window the user can add macros, set keyboard shortcuts, enable macro for listening and switch the program to "listening" mode. In the editor's window the user can create macros, save, edit existing ones and validate the written script. After closing the window, the program works in the background.
 ## Screenshots
-![main](screenShots/main.png)
-![editor](screenShots/editor.png)
+![main](screenShots/main.PNG)
+![editor](screenShots/editor.PNG)
 ### Available commands
 Every instruction starts with command name, then arguments must be provided<br>
 Eg: delay 500<br>
