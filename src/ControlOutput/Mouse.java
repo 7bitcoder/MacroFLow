@@ -2,7 +2,7 @@ package ControlOutput;
 
 import Instructions.Executor;
 
-import java.awt.*;
+import java.awt.Robot;
 
 public class Mouse {
     static public Robot robot;

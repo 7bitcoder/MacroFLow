@@ -1,15 +1,14 @@
 package ControlOutput;
 
 import Instructions.Executor;
-import org.junit.jupiter.api.Test;
-
+import junit.extensions.*;
+import org.junit.Test;
 import java.io.BufferedReader;
 import java.io.Reader;
 import java.io.StringReader;
 
 import static ControlOutput.System.Delay;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static  junit.framework.Assert.*;
 
 class SystemTest {
     String[] spl(String str) {

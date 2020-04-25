@@ -2,7 +2,8 @@ package ControlOutput;
 
 import Instructions.Executor;
 
-import java.awt.*;
+import java.awt.Toolkit;
+import java.awt.Robot;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;

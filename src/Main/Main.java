@@ -17,7 +17,7 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.awt.*;
+import java.awt.Robot;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;

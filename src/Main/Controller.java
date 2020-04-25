@@ -1,6 +1,5 @@
 package Main;
 
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -28,7 +27,7 @@ public class Controller {
     }
 
     protected void addScreen(Scenes name, String path) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
+        javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource(path));
         loader.setController(getController(name));
         Parent root = loader.load();
         screenMap.put(name, root);

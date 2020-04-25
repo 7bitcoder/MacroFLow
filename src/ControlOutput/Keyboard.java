@@ -2,7 +2,7 @@ package ControlOutput;
 
 import Instructions.Executor;
 
-import java.awt.*;
+import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
