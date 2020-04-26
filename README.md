@@ -1,5 +1,5 @@
 # MacroFLow
-Macro flow is a simple tool to create macros, due to simplicity you can create macros very quickly, each of them consists of simple commands described in lower chapters. You can assign a keyboard shortcut to the macro, and when you switch program to listening state, MacroFlow will wait for you to trigger the macro with the right hotkey. The number of macros the program can listen to is unlimited.
+Macro flow is a simple tool to create macros, due to simplicity you can create macros very quickly, each of them consists of simple commands described in lower chapters. You can assign a keyboard shortcut to the macro, and when you switch program to listening state, MacroFlow will wait for you to trigger the macro with the right hotkey, when same keyboard shortcut is pressed while macro is under execution, script is terminated. The number of macros the program can listen to is unlimited.
 
 ## Interface
 interface contains two windows: main and editor. In the main window the user can add macros, set keyboard shortcuts, enable macro for listening and switch the program to "listening" mode. In the editor's window the user can create macros, save, edit existing ones and validate the written script. After closing the window, the program works in the background.
@@ -35,7 +35,7 @@ endloop - closes loop statement
 * write string - writes string by pressing keys
 
 ### Installing
-Compiled Program is MacroFLow\out\artifacts\Raw directory. Program requires the java compiler to have a built-in javafx library.<br>
+Compiled Program is MacroFLow\out\artifacts\MacroFlow_jar directory. Program requires the java compiler to have a built-in javafx library.<br>
 To execute program on windwos run "run.bat"
 
 ## Built With
