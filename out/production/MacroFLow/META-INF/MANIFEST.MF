@@ -1,3 +1,6 @@
 Manifest-Version: 1.0
 Main-Class: Main.mainGui
+Class-Path: junit-4.13.jar jnativehook-2.1.0.jar src.zip javafx.base.jar
+  javafx.controls.jar javafx.web.jar javafx.media.jar javafx.fxml.jar ja
+ vafx.graphics.jar javafx.swing.jar javafx-swt.jar
 

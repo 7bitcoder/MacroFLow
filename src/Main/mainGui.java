@@ -93,6 +93,7 @@ public class mainGui extends Application {
                 Main.main.close();
                 Platform.exit();
                 tray.remove(trayIcon);
+                System.exit(0);
             });
 
             // setup the popup menu for the application.
