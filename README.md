@@ -15,7 +15,7 @@ Available instructions:<br>
 * **delay time** - suspend macro execution for time milliseconds
 * **clipboard data** - saves to clipboard data in string
 * **paste** - paste data from clipboard, this command is implemented as pressing combination CTRL+V
-* **var name [initial]** - creates variable with initialized with 0 or value initial if provided
+* **var name [initial]** - creates variable with initialized with 0 or value initial if provided. Initial can be also 'mouseX' or 'mouseY' it assigns actual mouse coordinate position to variable.
 * **add out [in1 in2]** - adds two variables (must be defined with command var) and assigns result to out variable out, if only out is provided then output variable is incremented by one.
 * **sub out [in1 in2]** - subtracts two variables (must be defined with command var) and assigns result to out variable out, if only out is provided then output variable is decremented by one.
 * **mul out in1 in2** - multiplies  two variables (must be defined with command var) and assigns result to out variable out
@@ -30,7 +30,9 @@ Available instructions:<br>
 * **endif** - closes if statement
 * **loop value** - if value is not equal to zero program executes loop instructions otherwise jumps to first endloop statement
 * **endloop** - closes loop statement
-* **movemouse xcoord ycoord** - moves mouse to position xcoord, ycoord on screen
+* **movemouse [in1 in2]** - moves mouse to position in1, in2 (must be defined with command var) on screen
+* **mousepress in1** - press mouse button, in1 can be 'left' or 'right'
+* **mouserelease in1** - release mouse button, in1 can be 'left' or 'right'
 * **presskey keyname** - press keyboard key
 * **releasekey keyname** - release keyboard key
 * **write string** - writes string by pressing keys
