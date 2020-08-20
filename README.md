@@ -38,7 +38,7 @@ Available instructions:<br>
 * **write string** - writes string by pressing keys
 
 ### Installing
-Compiled Program is MacroFLow\out\artifacts\MacroFlow_jar directory. Program requires the java compiler to have a built-in javafx library.<br>
+Compiled Program is MacroFLow\out\artifacts\MacroFlow_jar directory.<br>
 To execute program on windwos run "run.bat"
 
 ## Built With
