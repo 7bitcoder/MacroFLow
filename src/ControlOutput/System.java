@@ -2,12 +2,13 @@ package ControlOutput;
 
 import Instructions.Executor;
 
-import java.awt.Toolkit;
-import java.awt.Robot;
+import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.KeyEvent;
+import java.util.HashSet;
+import java.util.Set;
 
 public class System {
     static public Robot robot;
@@ -71,14 +72,22 @@ public class System {
         Executor macro_;
         int arg0 = 0;
         String name;
-
+        String mouse = null;
+        Set<String> mouseSet = new HashSet<String>(){{
+            add("mouseX");
+            add("mouseY");
+        }};
         @Override
         public void init(String[] args, Executor macro) throws Validator.ParserExcetption {
             macro_ = macro;
             v.valSize(args, 1, 2);
             name = v.valStr(args, 1);
             if (args.length == 3) {
-                arg0 = v.valNum(args, 2);
+                try {
+                    arg0 = v.valNum(args, 2);
+                } catch (Validator.ParserExcetption e){
+                    mouse = v.valStr(args, 2, mouseSet);
+                }
             }
             var res = macro_.variables.get(name);
             if (res != null)
@@ -88,6 +97,13 @@ public class System {
 
         @Override
         public void run() {
+            if(mouse != null){
+                if(mouse.equals( "mouseX")){
+                    arg0 = (int)MouseInfo.getPointerInfo().getLocation().getX();
+                } else {
+                    arg0 = (int)MouseInfo.getPointerInfo().getLocation().getY();
+                }
+            }
             macro_.variables.put(name, arg0);
         }
     }
@@ -115,11 +131,11 @@ public class System {
         @Override
         public void run() {
             if (increment) {
-                var var = macro_.variables.get(arg0);
+                int var = macro_.variables.get(arg0);
                 macro_.variables.put(arg0, ++var);
             } else {
                 Integer var1 = macro_.variables.get(arg1);
-                var var2 = macro_.variables.get(arg2);
+                int var2 = macro_.variables.get(arg2);
                 macro_.variables.put(arg0, var1 + var2);
             }
         }
@@ -148,11 +164,11 @@ public class System {
         @Override
         public void run() {
             if (decrement) {
-                var var = macro_.variables.get(arg0);
+                int var = macro_.variables.get(arg0);
                 macro_.variables.put(arg0, --var);
             } else {
-                Integer var1 = macro_.variables.get(arg1);
-                var var2 = macro_.variables.get(arg2);
+                int var1 = macro_.variables.get(arg1);
+                int var2 = macro_.variables.get(arg2);
                 macro_.variables.put(arg0, var1 - var2);
             }
         }
@@ -198,8 +214,8 @@ public class System {
 
         @Override
         public void run() {
-            var var1 = macro_.variables.get(arg1);
-            var var2 = macro_.variables.get(arg2);
+            int var1 = macro_.variables.get(arg1);
+            int var2 = macro_.variables.get(arg2);
             macro_.variables.put(arg0, var1 / var2);
         }
     }
@@ -221,8 +237,8 @@ public class System {
 
         @Override
         public void run() {
-            var var1 = macro_.variables.get(arg1);
-            var var2 = macro_.variables.get(arg2);
+            int var1 = macro_.variables.get(arg1);
+            int var2 = macro_.variables.get(arg2);
             macro_.variables.put(arg0, var1 > var2 ? 1 : 0);
         }
     }
@@ -244,8 +260,8 @@ public class System {
 
         @Override
         public void run() {
-            var var1 = macro_.variables.get(arg1);
-            var var2 = macro_.variables.get(arg2);
+            int var1 = macro_.variables.get(arg1);
+            int var2 = macro_.variables.get(arg2);
             macro_.variables.put(arg0, var1 < var2 ? 1 : 0);
         }
     }
@@ -267,8 +283,8 @@ public class System {
 
         @Override
         public void run() {
-            var var1 = macro_.variables.get(arg1);
-            var var2 = macro_.variables.get(arg2);
+            int var1 = macro_.variables.get(arg1);
+            int var2 = macro_.variables.get(arg2);
             macro_.variables.put(arg0, var1 == var2 ? 1 : 0);
         }
     }
@@ -288,7 +304,7 @@ public class System {
 
         @Override
         public void run() {
-            var var1 = macro_.variables.get(arg1);
+            int var1 = macro_.variables.get(arg1);
             macro_.variables.put(arg0, var1);
         }
     }

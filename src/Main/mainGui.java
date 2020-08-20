@@ -1,5 +1,4 @@
 package Main;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.image.Image;

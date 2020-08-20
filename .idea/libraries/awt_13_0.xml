@@ -1,0 +1,17 @@
+<component name="libraryTable">
+  <library name="awt-13.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/externals/awt/awt-13.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/externals/awt/base-13.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/externals/awt/guava-14.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/externals/awt/inputoutput-13.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/externals/awt/math-13.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/externals/awt/org.eclipse.xtext.xbase.lib-2.9.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/externals/awt/references-13.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/externals/awt/util-13.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/externals/awt/vmutils-13.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

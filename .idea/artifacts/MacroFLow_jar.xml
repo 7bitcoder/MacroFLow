@@ -4,9 +4,9 @@
     <root id="root">
       <element id="archive" name="MacroFLow.jar">
         <element id="module-output" name="MacroFLow" />
+        <element id="library" level="project" name="jnativehook-2.1.0" />
+        <element id="library" level="project" name="junit-4.13" />
       </element>
-      <element id="library" level="project" name="junit-4.13" />
-      <element id="library" level="project" name="jnativehook-2.1.0" />
     </root>
   </artifact>
 </component>
